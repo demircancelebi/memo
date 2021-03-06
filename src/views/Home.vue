@@ -4,13 +4,13 @@
     <h4>Choose category</h4>
     <select name="" id="" v-model="curCategory">
       <option value="">Choose</option>
-      <option v-for="option in options" v-bind:value="option.value" v-bind:key="option.value">
-        {{ option.text }}
+      <option v-for="opt in categories" v-bind:value="opt.value" v-bind:key="opt.value">
+        {{ opt.text }}
       </option>
     </select>
       <div class="row" v-if="!finished && curCategory">
         <h2>Gunluk pratik</h2>
-        <div class="col-4">
+        <div class="col-8">
           <div class="card mb-3">
             <div class="card-body">
               <p class="card-text">{{ questions[curCategory][index[curCategory]].q }}</p>
@@ -47,7 +47,8 @@ export default {
   //   HelloWorld,
   // },
   created() {
-    this.getDefaultOptions();
+    this.getCategories();
+    this.getQuestions();
   },
   computed: {
     finished() {
@@ -74,8 +75,26 @@ export default {
     },
   },
   methods: {
-    getDefaultOptions() {
-      const defaultOptions = [
+    getQuestions() {
+      const defaultQuestions = {
+      };
+
+      this.categories.forEach((category) => {
+        defaultQuestions[category.value] = [];
+      });
+
+      if (localStorage.getItem('questions')) {
+        this.questions = JSON.parse(localStorage.getItem('questions'));
+      } else {
+        this.questions = defaultQuestions;
+      }
+
+      Object.keys(this.questions).forEach((question) => {
+        this.index[question] = 0;
+      });
+    },
+    getCategories() {
+      const defaultCategories = [
         {
           text: 'Geography',
           value: 'geography',
@@ -95,9 +114,9 @@ export default {
       ];
 
       if (localStorage.getItem('categories')) {
-        this.options = JSON.parse(localStorage.getItem('categories'));
+        this.categories = JSON.parse(localStorage.getItem('categories'));
       } else {
-        this.options = defaultOptions;
+        this.categories = defaultCategories;
       }
     },
     reveal() {
@@ -116,34 +135,11 @@ export default {
   },
   data() {
     return {
-      index: {
-        geography: 0,
-        history: 0,
-        science: 0,
-      },
+      index: {},
       isRevealed: false,
       curCategory: '',
-      options: [],
-      questions: {
-        geography: [{
-          q: 'Turkiye\'nin baskenti neresidir?',
-          a: 'Ankara',
-        }, {
-          q: 'En kalabalik ilimiz hangisidir?',
-          a: 'Istanbul',
-        }, {
-          q: 'En az nufusa sahip ilimiz hangisidir?',
-          a: 'Bayburt',
-        }],
-        history: [{
-          q: 'HS: En az nufusa sahip ilimiz hangisidir?',
-          a: 'Bayburt',
-        }],
-        science: [{
-          q: 'SC: En az nufusa sahip ilimiz hangisidir?',
-          a: 'Bayburt',
-        }],
-      },
+      categories: [],
+      questions: {},
     };
   },
 };

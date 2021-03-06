@@ -1,7 +1,8 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-    <pre><code>{{ categories }}</code></pre>
+  <div class="categories">
+    <div v-for="category in categories" :key="category.value">
+      {{ category.text }}
+    </div>
     <input type="text" v-model="newCategoryName">
     <button @click="addCategory">Add category</button>
   </div>
@@ -10,7 +11,7 @@
 <script>
 
 export default {
-  name: 'About',
+  name: 'Categories',
   created() {
     this.getDefaultCategories();
   },
@@ -48,6 +49,7 @@ export default {
       });
 
       localStorage.setItem('categories', JSON.stringify(this.categories));
+      this.newCategoryName = '';
     },
   },
   data() {
