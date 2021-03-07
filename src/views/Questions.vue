@@ -12,7 +12,7 @@
     </div>
     <h2>===</h2>
     {{ questions }}
-    this is questions
+    this is questions ATİLLA/MERT
 
   </div>
 </template>
