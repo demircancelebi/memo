@@ -20,6 +20,21 @@ const routes = [
     name: 'Questions',
     component: () => import('../views/Questions.vue'),
   },
+  {
+    path: '/play',
+    name: 'Play',
+    component: () => import('../views/Play.vue'),
+  },
+  {
+    path: '/signin',
+    name: 'SignIn',
+    component: () => import('../views/SignIn.vue'),
+  },
+  {
+    path: '/signup',
+    name: 'SignUp',
+    component: () => import('../views/SignUp.vue'),
+  },
 ];
 
 const router = createRouter({
