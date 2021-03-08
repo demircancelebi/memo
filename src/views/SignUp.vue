@@ -1,39 +1,94 @@
 <template>
 <div>
-    <div class="container">
+    <div class="container-signup">
         <div class="row">
             <h2> Sign Up Menu </h2>
         </div><br>
         <p>
             <label for="firstname" class="floatLabel">First Name</label>
-            <input id="firstname" name="firstname" type="text">
+            <input id="firstname" name="firstname" type="text" v-model="fName">
         </p>
         <p>
             <label for="lastname" class="floatLabel">Last Name</label>
-            <input id="lastname" name="lastname" type="text">
+            <input id="lastname" name="lastname" type="text" v-model="lName">
         </p>
         <p>
             <label for="username" class="floatLabel">Username</label>
-            <input id="username" name="username" type="text">
+            <input id="username" name="username" type="text" v-model="username">
         </p>
         <p>
             <label for="password" class="floatLabel">Password</label>
-            <input id="password" name="password" type="password">
+            <input id="password" name="password" type="password" v-model="password">
         </p>
         <p>
             <label for="confirm_password" class="floatLabel">Confirm Password</label>
-            <input id="confirm_password" name="confirm_password" type="password">
+            <input id="confirm_password" name="confirm_password"
+            type="password" v-model="confirm_password">
             <span>Your password do not match!</span>
         </p>
-        <p><input type="submit" value="Sign Me Up" id="submit"></p>
+        <p><input type="submit" value="Sign Me Up" id="submit" @click="registerUser"></p>
     </div>
 </div>
 </template>
 
+<script>
+export default {
+  name: 'SignUp',
+  created() {
+
+  },
+
+  mounted() {
+    if (localStorage.getItem('users')) {
+      try {
+        this.users = JSON.parse(localStorage.getItem('users'));
+      } catch (e) {
+        localStorage.removeItem('users');
+      }
+    }
+  },
+
+  methods: {
+    registerUser() {
+      const tempUsers = Object.keys(this.users);
+      for (let i = 0; i < tempUsers.length; i += 1) {
+        if (tempUsers[i] === this.username) {
+          console.log('this user zateyn war mæl evladı');
+          return;
+        }
+      }
+
+      if (this.password !== this.confirm_password) {
+        console.log('pesvördünü doru yaz mæl evladi');
+        return;
+      }
+      this.users[this.username] = {};
+      this.users[this.username].fName = this.fName;
+      this.users[this.username].lName = this.lName;
+      this.users[this.username].password = this.password;
+
+      localStorage.setItem('users', JSON.stringify(this.users));
+      this.$router.push('/');
+    },
+  },
+
+  data() {
+    return {
+      users: {},
+      fName: null,
+      lName: null,
+      username: null,
+      password: null,
+      confirm_password: null,
+    };
+  },
+};
+</script>
+
 <style lang="scss">
 $button: rgba(34, 201, 201, 0.781);
 
-div[class="container"] {
+div[class="container-signup"] {
     background: #fff;
     padding: 2em 4em 2em;
     max-width: 500px;
