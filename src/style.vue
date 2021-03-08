@@ -1,7 +1,11 @@
 <template> </template>
 <script>
-export default {
-  data: function() {}
-};
+
 </script>
-<style></style>
+<style lang="scss">
+#nav {
+background: red;
+}
+
+
+</style>
