@@ -15,6 +15,7 @@
         <p>
             <label for="username" class="floatLabel">Username</label>
             <input id="username" name="username" type="text" v-model="username">
+            <span v-if="checkUsername">This username already exist!</span>
         </p>
         <p>
             <label for="password" class="floatLabel">Password</label>
@@ -24,9 +25,12 @@
             <label for="confirm_password" class="floatLabel">Confirm Password</label>
             <input id="confirm_password" name="confirm_password"
             type="password" v-model="confirm_password">
-            <span>Your password do not match!</span>
+            <span v-if="checkPassword">Your password do not match!</span>
         </p>
-        <p><input type="submit" value="Sign Me Up" id="submit" @click="registerUser"></p>
+        <p>
+            <span v-if="checkEmpty">Not allowed to empty inputs!</span>
+            <input type="submit" value="Sign Me Up" id="submit" @click="registerUser">
+        </p>
     </div>
 </div>
 </template>
@@ -50,16 +54,25 @@ export default {
 
   methods: {
     registerUser() {
+      this.checkPassword = false;
+      this.checkUsername = false;
+      this.checkEmpty = false;
+      if (!this.fName || !this.lName || !this.password
+      || !this.confirm_password || !this.username) {
+        this.checkEmpty = true;
+        return;
+      }
+
       const tempUsers = Object.keys(this.users);
       for (let i = 0; i < tempUsers.length; i += 1) {
         if (tempUsers[i] === this.username) {
-          console.log('this user zateyn war mæl evladı');
+          this.checkUsername = true;
           return;
         }
       }
 
       if (this.password !== this.confirm_password) {
-        console.log('pesvördünü doru yaz mæl evladi');
+        this.checkPassword = true;
         return;
       }
       this.users[this.username] = {};
@@ -80,6 +93,9 @@ export default {
       username: null,
       password: null,
       confirm_password: null,
+      checkPassword: false,
+      checkUsername: false,
+      checkEmpty: false,
     };
   },
 };
