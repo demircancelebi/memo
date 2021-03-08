@@ -1,5 +1,5 @@
 <template>
-  <div id="nav">
+  <div v-if="currUser" id="nav">
     <router-link to="/">Home</router-link> |
     <router-link to="/play">Play</router-link> |
     <router-link to="/categories">Categories</router-link> |
@@ -7,6 +7,26 @@
   </div>
   <router-view/>
 </template>
+
+<script>
+export default {
+  name: 'App',
+  mounted() {
+    if (localStorage.getItem('currUser')) {
+      try {
+        this.currUser = JSON.parse(localStorage.getItem('currUser'));
+      } catch (e) {
+        localStorage.removeItem('currUser');
+      }
+    }
+  },
+  data() {
+    return {
+      currUser: null,
+    };
+  },
+};
+</script>
 
 <style lang="scss">
 #app {
