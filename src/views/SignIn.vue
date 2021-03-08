@@ -1,7 +1,8 @@
 <template>
+    <div v-if="!currentUser"><br><br><br><br></div>
     <div class="container-signin">
         <div class="row">
-            <h3>Sign in to Memo App</h3>
+            <h3>Sign In Menu</h3>
         </div><br>
         <div class="row justify-content-center">
             <div class="col-8">
@@ -82,18 +83,10 @@ export default {
   },
   data() {
     return {
-      users: {
-        atillakaantanyeri: {
-          fName: 'Atilla Kaan',
-          lName: 'Tanyeri',
-          password: '123456789',
-          categories: [],
-          questions: {},
-        },
-      },
+      users: {},
       username: null,
       password: null,
-      currUser: null,
+      currentUser: null,
       showPassword: false,
       showUsernameError: false,
       showPasswordError: false,
@@ -114,11 +107,11 @@ export default {
         for (let i = 0; i < usernames.length; i += 1) {
           if (usernames[i] === this.username) {
             this.showUsernameError = false;
-            this.currUser = usernames[i];
-            if (this.users[this.currUser].password === this.password) {
+            this.currentUser = usernames[i];
+            if (this.users[this.currentUser].password === this.password) {
               this.showPasswordError = false;
               this.showSuccessfullyLogin = true;
-              localStorage.setItem('currUser', JSON.stringify(this.currUser));
+              localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
               this.$router.push('/');
             } else {
               this.password = '';

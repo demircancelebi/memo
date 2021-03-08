@@ -108,7 +108,7 @@ div[class="container-signup"] {
     background: #fff;
     padding: 2em 4em 2em;
     max-width: 500px;
-    margin: 50px auto 0px;
+    margin: 50px auto 50px;
     box-shadow: 0 0 1em #222;
     border-radius: 10px;
 

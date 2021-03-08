@@ -1,9 +1,10 @@
 <template>
-  <div v-if="currUser" id="nav">
+  <div v-if="currentUser" id="nav">
     <router-link to="/">Home</router-link> |
     <router-link to="/play">Play</router-link> |
     <router-link to="/categories">Categories</router-link> |
-    <router-link to="/questions">Questions</router-link>
+    <router-link to="/questions">Questions</router-link> |
+    <a href="#" style="color:red;" @click.prevent="logOut">Log-Out</a>
   </div>
   <router-view/>
 </template>
@@ -11,19 +12,30 @@
 <script>
 export default {
   name: 'App',
-  mounted() {
-    if (localStorage.getItem('currUser')) {
-      try {
-        this.currUser = JSON.parse(localStorage.getItem('currUser'));
-      } catch (e) {
-        localStorage.removeItem('currUser');
+  watch: {
+    $route() {
+      if (localStorage.getItem('currentUser')) {
+        try {
+          this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        } catch (e) {
+          localStorage.removeItem('currentUser');
+        }
       }
-    }
+    },
   },
   data() {
     return {
-      currUser: null,
+      currentUser: null,
+      showLogOutMessage: false,
     };
+  },
+  methods: {
+    logOut() {
+      this.showLogOutMessage = true;
+      this.currentUser = '';
+      localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+      this.$router.push('/signin');
+    },
   },
 };
 </script>
