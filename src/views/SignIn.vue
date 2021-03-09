@@ -1,4 +1,9 @@
 <template>
+    <div v-if="currentUser">
+    <div style="font-size:150%; color:black;" class="alert alert-primary" role="alert">
+      Successfully logged-in. Welcome {{ currentUser }}, you will be redirected soon...</div>
+      <br>
+    </div>
     <div v-if="!currentUser"><br><br><br><br></div>
     <div class="container-signin">
         <div class="row">
@@ -92,6 +97,7 @@ export default {
       showPasswordError: false,
       dontShowEmptyInputError: true,
       showSuccessfullyLogin: false,
+      showLogInMessage: false,
     };
   },
   methods: {
@@ -111,13 +117,14 @@ export default {
             if (this.users[this.currentUser].password === this.password) {
               this.showPasswordError = false;
               this.showSuccessfullyLogin = true;
+              this.showLogInMessage = true;
               localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-              this.$router.push('/');
+              window.setTimeout(this.pushRouter, 5000);
             } else {
               this.password = '';
               this.showPasswordError = true;
             }
-          } else if (i + 1 === usernames.length) {
+          } else if (i + 1 === usernames.length && !this.currentUser) {
             this.username = '';
             this.password = '';
             this.showUsernameError = true;
@@ -131,6 +138,11 @@ export default {
       } else {
         this.showPassword = true;
       }
+    },
+    pushRouter() {
+      console.log('push router');
+      this.showLogInMessage = false;
+      this.$router.push('/');
     },
   },
 };
