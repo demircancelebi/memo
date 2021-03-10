@@ -42,7 +42,7 @@ export default {
         },
         {
           text: 'Technology',
-          value: 'tech',
+          value: 'technology',
         },
       ];
 

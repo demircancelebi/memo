@@ -26,10 +26,6 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-<<<<<<< Updated upstream
-=======
-        <button type="button" class="btn btn-primary">Understood</button>
->>>>>>> Stashed changes
       </div>
     </div>
   </div>
@@ -91,11 +87,7 @@ export default {
         text: this.newCategoryName,
         value: this.newCategoryName.trim().toLowerCase(),
       });
-<<<<<<< Updated upstream
       this.questions[this.newCategoryName.trim().toLowerCase()] = [];
-=======
-      this.questions[this.newCategoryName] = [];
->>>>>>> Stashed changes
       localStorage.setItem('questions', JSON.stringify(this.questions));
       localStorage.setItem('categories', JSON.stringify(this.categories));
       this.newCategoryName = '';
