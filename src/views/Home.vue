@@ -109,7 +109,7 @@ export default {
         },
         {
           text: 'Technology',
-          value: 'tech',
+          value: 'technology',
         },
       ];
 
@@ -121,6 +121,9 @@ export default {
     },
     reveal() {
       this.isRevealed = true;
+      console.log(this.questions);
+      console.log(this.questions[this.curCategory]);
+      console.log(this.index[this.curCategory]);
     },
     remembered() {
       this.nextQuestion();
