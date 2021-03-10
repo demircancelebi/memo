@@ -4,31 +4,80 @@
     <router-link to="/play">Play</router-link> |
     <router-link to="/categories">Categories</router-link> |
     <router-link to="/questions">Questions</router-link> |
-    <a href="#" style="color:red;" data-bs-toggle="modal"
-    data-bs-target="#staticBackdrop">Log-Out</a>
+
+    <div class="dropdown" style="display: inline-block">
+      <button
+        class="btn btn-secondary dropdown-toggle"
+        type="button"
+        id="dropdownMenu"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        {{ currentUser }}
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+        <li>
+          <button class="dropdown-item" type="button" href="#">
+            My Profile
+          </button>
+        </li>
+        <li>
+          <button
+            class="dropdown-item"
+            type="button"
+            href="#"
+            style="color: red"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop"
+          >
+            Log-Out
+          </button>
+        </li>
+      </ul>
+    </div>
   </div>
-  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
-  data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+
+  <div
+    class="modal fade"
+    id="staticBackdrop"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-hidden="true"
+  >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-body">
-          <br>
+          <br />
           Are you sure want to log-out?
         </div>
         <div class="modal-footer justify-content-center">
-          <button type="button" class="btn btn-success"
-          data-bs-dismiss="modal" @click="logOut">Yes</button>
-          <button type="button" class="btn btn-danger"
-          data-bs-dismiss="modal">No</button>
+          <button
+            type="button"
+            class="btn btn-success"
+            data-bs-dismiss="modal"
+            @click="logOut"
+          >
+            Yes
+          </button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+            No
+          </button>
         </div>
       </div>
     </div>
   </div>
-  <div style="font-size:150%; color:black;" v-if="showLogOutMessage"
-  class="alert alert-danger" role="alert">
+
+  <div
+    style="font-size: 150%; color: black"
+    v-if="showLogOutMessage"
+    class="alert alert-danger"
+    role="alert"
+  >
     Successfully logged-out, you will be redirected soon...
   </div>
-  <router-view/>
+
+  <router-view />
 </template>
 
 <script>
