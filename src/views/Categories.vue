@@ -13,7 +13,18 @@
 export default {
   name: 'Categories',
   created() {
+    if (localStorage.getItem('currentUser')) {
+      try {
+        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      } catch (e) {
+        localStorage.removeItem('currentUser');
+      }
+    }
+    if (!this.currentUser) {
+      this.$router.back();
+    }
     this.getDefaultCategories();
+    this.getQuestions();
   },
   methods: {
     getDefaultCategories() {
@@ -42,12 +53,28 @@ export default {
         this.categories = defaultOptions;
       }
     },
+    getQuestions() {
+      const defaultQuestions = {
+      };
+
+      this.categories.forEach((category) => {
+        defaultQuestions[category.value] = [];
+      });
+
+      if (localStorage.getItem('questions')) {
+        this.questions = JSON.parse(localStorage.getItem('questions'));
+      } else {
+        this.questions = defaultQuestions;
+      }
+    },
     addCategory() {
       this.categories.push({
         text: this.newCategoryName,
         value: this.newCategoryName.trim().toLowerCase(),
       });
 
+      this.questions[this.newCategoryName] = [];
+      localStorage.setItem('questions', JSON.stringify(this.questions));
       localStorage.setItem('categories', JSON.stringify(this.categories));
       this.newCategoryName = '';
     },
@@ -56,6 +83,7 @@ export default {
     return {
       newCategoryName: '',
       categories: [],
+      questions: {},
     };
   },
 };

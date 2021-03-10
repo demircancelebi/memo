@@ -4,14 +4,14 @@
       <button @click="showQuestions(category)">{{ category.text }}</button>
     </div>
     <div v-if="currentCategory">
-      Soru alani
-      {{ questions[currentCategory] }}
+      <br>Soru alani
+      {{ questions[currentCategory] }}<br><br>
       <input type="text" v-model="tempQuestion">
       <input type="text" v-model="tempAnswer">
       <button @click="addQuestion">Add Question</button>
     </div>
     <h2>===</h2>
-    {{ questions }}
+    {{ questions }}<br>
     this is questions
 
   </div>
@@ -22,6 +22,16 @@
 export default {
   name: 'Questions',
   created() {
+    if (localStorage.getItem('currentUser')) {
+      try {
+        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      } catch (e) {
+        localStorage.removeItem('currentUser');
+      }
+    }
+    if (!this.currentUser) {
+      this.$router.back();
+    }
     this.getCategories();
     this.getQuestions();
   },
@@ -94,6 +104,8 @@ export default {
 
       localStorage.setItem('questions', JSON.stringify(this.questions));
       // this.tempQuestion
+      this.tempQuestion = '';
+      this.tempAnswer = '';
     },
   },
   data() {

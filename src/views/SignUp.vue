@@ -39,9 +39,17 @@
 export default {
   name: 'SignUp',
   created() {
-
+    if (localStorage.getItem('currentUser')) {
+      try {
+        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      } catch (e) {
+        localStorage.removeItem('currentUser');
+      }
+    }
+    if (this.currentUser) {
+      this.$router.back();
+    }
   },
-
   mounted() {
     if (localStorage.getItem('users')) {
       try {
@@ -79,6 +87,7 @@ export default {
       this.users[this.username].fName = this.fName;
       this.users[this.username].lName = this.lName;
       this.users[this.username].password = this.password;
+      this.users[this.username].img = null;
 
       localStorage.setItem('users', JSON.stringify(this.users));
       this.$router.push('/');
