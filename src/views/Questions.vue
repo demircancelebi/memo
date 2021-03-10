@@ -8,9 +8,9 @@
           <label for="questionInput">Question:
             <input id="questionInput" type="text" v-model="tempQuestion"/>
           </label>
-          <div for="questionInput">Answer:
+          <label for="questionInput">Answer:
             <input id="answerInput" type="text" v-model="tempAnswer"/>
-          </div>
+          </label>
           <button class="btn btn-success" @click="addQuestion">Add Question</button>
         </div>
     <h2>===</h2>
