@@ -105,6 +105,7 @@ export default {
     pushRouter() {
       console.log('push router');
       this.showLogOutMessage = false;
+      this.$router.push('/signin');
     },
   },
 };

@@ -94,6 +94,9 @@ export default {
         localStorage.removeItem('currentUser');
       }
     }
+    if (!this.currentUser) {
+      this.$router.back();
+    }
     if (localStorage.getItem('users')) {
       try {
         this.users = JSON.parse(localStorage.getItem('users'));
