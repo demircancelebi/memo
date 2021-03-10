@@ -111,6 +111,9 @@ export default {
     },
     removeQuestion(quest) {
       const qIndex = this.questions[this.currentCategory].indexOf(quest);
+      if (qIndex < 0) {
+        throw new Error('Question index is not valid');
+      }
       this.questions[this.currentCategory].splice(qIndex, 1);
       localStorage.setItem('questions', JSON.stringify(this.questions));
     },
