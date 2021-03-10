@@ -73,7 +73,7 @@ export default {
         value: this.newCategoryName.trim().toLowerCase(),
       });
 
-      this.questions[this.newCategoryName] = [];
+      this.questions[this.newCategoryName.trim().toLowerCase()] = [];
       localStorage.setItem('questions', JSON.stringify(this.questions));
       localStorage.setItem('categories', JSON.stringify(this.categories));
       this.newCategoryName = '';

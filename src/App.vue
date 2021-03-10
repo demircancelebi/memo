@@ -6,20 +6,20 @@
     <router-link to="/questions">Questions</router-link> |
 
     <div class="dropdown" style="display: inline-block">
-      <button
-        class="btn btn-secondary dropdown-toggle"
+      <a
+        class="dropdown-toggle"
         type="button"
         id="dropdownMenu"
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
         {{ currentUser }}
-      </button>
+      </a>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
         <li>
-          <button class="dropdown-item" type="button" href="#">
+          <a class="dropdown-item" type="button" href="#" @click="this.$router.push('/profile')">
             My Profile
-          </button>
+          </a>
         </li>
         <li>
           <button

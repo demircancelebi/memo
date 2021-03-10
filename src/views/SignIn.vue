@@ -133,17 +133,14 @@ export default {
               this.showSuccessfullyLogin = true;
               this.showLogInMessage = true;
               localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-              window.setTimeout(this.pushRouter, 4000);
+              window.setTimeout(this.pushRouter, 3000);
             } else {
               this.password = '';
               this.showPasswordError = true;
             }
-          } else if (i + 1 === usernames.length) {
+          } else if (i + 1 === usernames.length && !this.currentUser) {
             this.username = '';
             this.password = '';
-            if (!this.currentUser) {
-              this.showUsernameError = false;
-            }
             this.showUsernameError = true;
           }
         }
