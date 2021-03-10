@@ -1,10 +1,10 @@
 <template>
     <div v-if="currentUser">
-    <div style="font-size:150%; color:black;" class="alert alert-primary" role="alert">
-      Successfully logged-in. Welcome {{ currentUser }}, you will be redirected soon...</div>
-      <br>
+    <div v-if="showLogInMessage" class="alert alert-primary" role="alert">
+      Successfully logged-in. Welcome <b>{{ currentUser }}</b>, you will be redirected soon...</div>
+      <br><br>
     </div>
-    <div v-if="!currentUser"><br><br><br><br></div>
+    <div v-if="!showLogInMessage"><br><br><br><br></div>
     <div class="container-signin">
         <div class="row">
             <h3>Sign In Menu</h3>
@@ -76,6 +76,16 @@
 export default {
   name: 'SignIn',
   created() {
+    if (localStorage.getItem('currentUser')) {
+      try {
+        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      } catch (e) {
+        localStorage.removeItem('currentUser');
+      }
+    }
+    if (this.currentUser) {
+      this.$router.back();
+    }
   },
   mounted() {
     if (localStorage.getItem('users')) {
@@ -110,6 +120,10 @@ export default {
       } else {
         this.dontShowEmptyInputError = true;
         const usernames = Object.keys(this.users);
+        if (usernames.length === 0) {
+          this.showUsernameError = true;
+          return;
+        }
         for (let i = 0; i < usernames.length; i += 1) {
           if (usernames[i] === this.username) {
             this.showUsernameError = false;
@@ -119,14 +133,17 @@ export default {
               this.showSuccessfullyLogin = true;
               this.showLogInMessage = true;
               localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-              window.setTimeout(this.pushRouter, 5000);
+              window.setTimeout(this.pushRouter, 4000);
             } else {
               this.password = '';
               this.showPasswordError = true;
             }
-          } else if (i + 1 === usernames.length && !this.currentUser) {
+          } else if (i + 1 === usernames.length) {
             this.username = '';
             this.password = '';
+            if (!this.currentUser) {
+              this.showUsernameError = false;
+            }
             this.showUsernameError = true;
           }
         }

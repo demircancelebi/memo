@@ -67,14 +67,8 @@
       </div>
     </div>
   </div>
-
-  <div
-    style="font-size: 150%; color: black"
-    v-if="showLogOutMessage"
-    class="alert alert-danger"
-    role="alert"
-  >
-    Successfully logged-out, you will be redirected soon...
+  <div v-if="showLogOutMessage" class="alert alert-danger" role="alert">
+    Successfully logged-out, have a nice day !
   </div>
 
   <router-view />
@@ -103,14 +97,14 @@ export default {
   methods: {
     logOut() {
       this.showLogOutMessage = true;
+      this.currentUser = '';
+      localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+      this.$router.back();
       window.setTimeout(this.pushRouter, 3000);
     },
     pushRouter() {
       console.log('push router');
       this.showLogOutMessage = false;
-      this.currentUser = '';
-      localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-      this.$router.push('/signin');
     },
   },
 };
