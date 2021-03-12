@@ -1,6 +1,6 @@
 <template>
 <div class="home">
-    <div v-if="!currentUser"><br><br><br></div>
+    <div class="mt-5" v-if="!currentUser"></div>
     <div v-if="currentUser">
         <div>
             <div class="row">
@@ -12,8 +12,8 @@
                 </div>
                 <div class="col-4"></div>
                 <div class="col-2"></div>
-            </div><br>
-            <div id="profileRow" class="row">
+            </div>
+            <div id="profileRow" class="row mt-2">
               <div class="col-1"></div>
               <div class="col-3">
                 <p class="text-start fname-lname">{{ users[currentUser].fName }}
@@ -22,7 +22,7 @@
                   {{ currentUser }}</p>
                   <div class="d-grid gap-2 col-9">
                     <button id="myButton" @click="editProfile"
-                    style="font-size:80%;" class="btn btn-dark">
+                    class="btn btn-dark edit-profile-btn">
                       Edit Profile
                     </button>
                   </div>
@@ -33,13 +33,15 @@
         </div>
     </div>
     <div v-if="!currentUser">
-        <h4>Welcome to Memo App</h4><br>
-        <router-link to="/signin">
-            <button class="btn btn-dark">Sign In</button>
-        </router-link>
-        <router-link style="padding-left:20px" to="/signup">
-            <button class="btn btn-dark">Sign Up</button>
-        </router-link>
+        <h4>Welcome to Memo App</h4>
+        <div class="mt-4">
+          <router-link to="/signin">
+              <button class="btn btn-dark">Sign In</button>
+          </router-link>
+          <router-link class="router-signup" to="/signup">
+              <button class="btn btn-dark">Sign Up</button>
+          </router-link>
+        </div>
     </div>
 </div>
 </template>
@@ -52,7 +54,6 @@ export default {
       if (this.currentUser && this.users[this.currentUser] && this.users[this.currentUser].img) {
         return this.users[this.currentUser].img;
       }
-
       return 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
     },
   },
@@ -87,10 +88,16 @@ export default {
 </script>
 
 <style>
+.router-signup {
+  padding-left: 20px;
+}
 .profileImg {
     width: 250px;
     height: 250px;
     border-radius: 125px;
+}
+.edit-profile-btn {
+  font-size: 80%;
 }
 .fname-lname {
     font-size: 120%;

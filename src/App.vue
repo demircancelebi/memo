@@ -5,7 +5,7 @@
     <router-link to="/categories">Categories</router-link> |
     <router-link to="/questions">Questions</router-link> |
 
-    <div class="dropdown" style="display: inline-block">
+    <div class="dropdown dropdown-current-user">
       <a
         class="dropdown-toggle"
         type="button"
@@ -17,16 +17,15 @@
       </a>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
         <li>
-          <a class="dropdown-item" type="button" href="#" @click="this.$router.push('/profile')">
+          <a class="dropdown-item" type="button" @click.prevent="this.$router.push('/profile')">
             My Profile
           </a>
         </li>
         <li>
           <button
-            class="dropdown-item"
+            class="dropdown-item dropdown-logout"
             type="button"
             href="#"
-            style="color: red"
             data-bs-toggle="modal"
             data-bs-target="#staticBackdrop"
           >
@@ -47,8 +46,7 @@
   >
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-body">
-          <br />
+        <div class="modal-body mt-3">
           Are you sure want to log-out?
         </div>
         <div class="modal-footer justify-content-center">
@@ -103,7 +101,6 @@ export default {
       window.setTimeout(this.pushRouter, 3000);
     },
     pushRouter() {
-      console.log('push router');
       this.showLogOutMessage = false;
       this.$router.push('/signin');
     },
@@ -131,5 +128,11 @@ export default {
       color: #42b983;
     }
   }
+}
+.dropdown-current-user {
+  display: inline-block;
+}
+.dropdown-logout {
+  color: red;
 }
 </style>

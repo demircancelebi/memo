@@ -4,8 +4,7 @@
       <div class="row">
         <h2>Sign Up Menu</h2>
       </div>
-      <br />
-      <p>
+      <p class="mt-4">
         <label for="firstname" class="floatLabel">First Name</label>
         <input id="firstname" name="firstname" type="text" v-model="fName" />
       </p>
@@ -106,6 +105,7 @@ export default {
         return;
       }
       this.users[this.username] = {};
+      this.users[this.username].username = this.username;
       this.users[this.username].fName = this.fName;
       this.users[this.username].lName = this.lName;
       this.users[this.username].password = this.password;
@@ -135,7 +135,7 @@ export default {
 <style lang="scss">
 $button: rgba(34, 201, 201, 0.781);
 
-div[class='container-signup'] {
+.container-signup {
   background: #fff;
   padding: 2em 4em 2em;
   max-width: 500px;

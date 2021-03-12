@@ -3,17 +3,16 @@
     <div v-for="category in categories" :key="category.value">
       <button @click="showQuestions(category)">{{ category.text }}</button>
     </div>
-    <div v-if="currentCategory">
-      <br>Soru alani
-      {{ questions[currentCategory] }}<br><br>
-      <input type="text" v-model="tempQuestion">
+    <div class="mb-4" v-if="currentCategory">
+      Soru alani
+      {{ questions[currentCategory] }}
+      <input class="mt-4" type="text" v-model="tempQuestion">
       <input type="text" v-model="tempAnswer">
       <button @click="addQuestion">Add Question</button>
     </div>
     <h2>===</h2>
-    {{ questions }}<br>
-    this is questions
-
+    {{ questions }}
+    <div class="mt-2">this is questions</div>
   </div>
 </template>
 
@@ -81,7 +80,6 @@ export default {
       });
     },
     showQuestions(category) {
-      console.log(`Showing questions for ${category.value}`);
       this.currentCategory = category.value;
     },
     addQuestion() {
