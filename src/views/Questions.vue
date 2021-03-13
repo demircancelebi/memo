@@ -36,6 +36,16 @@
 export default {
   name: 'Questions',
   created() {
+    if (localStorage.getItem('currentUser')) {
+      try {
+        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      } catch (e) {
+        localStorage.removeItem('currentUser');
+      }
+    }
+    if (!this.currentUser) {
+      this.$router.back();
+    }
     this.getCategories();
     this.getQuestions();
   },
