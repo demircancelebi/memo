@@ -1,5 +1,5 @@
 <template>
-  <div class="profile">
+  <div v-if="!showDeleteAccMessage" class="profile">
     <h4>My Profile</h4>
     <div class="row mt-4">
       <div class="col-1"></div>
@@ -12,12 +12,34 @@
           {{ users[currentUser].lName }}</p>
         <p class="text-start username">
           {{ users[currentUser].username }}</p>
-          <div class="d-grid gap-2 col-9">
-            <button id="myButton"
-            class="btn btn-dark edit-profile-btn">
-              Change profile picture
-            </button>
+        <div class="d-grid gap-2 col-9">
+          <input v-if="showImgSelection" type="text" placeholder="imageURL"
+          class="form-control" v-model="newImg">
+          <button class="btn btn-dark edit-profile-btn"
+          @click="changeImg">
+            Change image
+          </button>
+          <button class="btn btn-danger edit-profile-btn"
+          data-bs-toggle="modal" data-bs-target="#staticBackdrop2">
+            Delete my account
+          </button>
+          <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static"
+          data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-body mt-3">
+                Are you sure want to delete your account?
+              </div>
+              <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal"
+                @click="deleteUser">Yes</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                  No</button>
+              </div>
+            </div>
+            </div>
           </div>
+        </div>
       </div>
       <div class="col-5">
         <div class="row mt-4" v-for="attribute in attributes"
@@ -31,7 +53,7 @@
             <input v-if="!isAttributeHidden[attribute]" type="text" class="col form-control"
             :placeholder="users[currentUser][attribute]" v-model="newInput[attribute]">
             <div class="col text-start">
-                <button @click="clicked(attribute)" class="btn btn-outline-dark">
+                <button @click="clickedEdit(attribute)" class="btn btn-outline-dark">
                     <i class="fas fa-edit"></i>
                 </button>
             </div>
@@ -50,6 +72,9 @@
       <div class="col-2"></div>
     </div>
   </div>
+  <div v-if="showDeleteAccMessage" class="alert alert-primary" role="alert">
+    Account successfully deleted, going back to login page!
+  </div>
 </template>
 
 <script>
@@ -65,10 +90,14 @@ export default {
       infoMessages: {
         usernameErr: 'Username already taken.',
         saveSuccess: 'Successfully saved!',
+        imgChangeSuccess: 'Image successfully changed!',
       },
       message: null,
       showInfoMessage: false,
+      showImgSelection: false,
+      showDeleteAccMessage: false,
       currentUser: null,
+      newImg: null,
     };
   },
   created() {
@@ -93,7 +122,7 @@ export default {
   },
   computed: {
     profileImg() {
-      if (this.users[this.currentUser].img) {
+      if (this.currentUser && this.users[this.currentUser] && this.users[this.currentUser].img) {
         return this.users[this.currentUser].img;
       }
       return 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
@@ -114,7 +143,7 @@ export default {
         this.newInput[this.attributes[i]] = '';
       }
     },
-    clicked(attribute) {
+    clickedEdit(attribute) {
       const isHidden = this.isAttributeHidden[attribute];
       if (isHidden) {
         this.isAttributeHidden[attribute] = false;
@@ -143,7 +172,7 @@ export default {
             delete this.users[oldCurrentUser];
           }
           this.users[this.currentUser][this.attributes[i]] = this.newInput[this.attributes[i]];
-          this.clicked(this.attributes[i]);
+          this.clickedEdit(this.attributes[i]);
           localStorage.setItem('users', JSON.stringify(this.users));
           this.showMessages('saveSuccess');
           window.setTimeout(this.saveSuccess, 3000);
@@ -158,6 +187,34 @@ export default {
     saveSuccess() {
       this.showInfoMessage = false;
       window.location.reload();
+    },
+    imgSelection() {
+      if (this.showImgSelection) {
+        this.showImgSelection = false;
+      } else {
+        this.showImgSelection = true;
+      }
+    },
+    changeImg() {
+      this.imgSelection();
+      if (this.newImg) {
+        this.showMessages('imgChangeSuccess');
+        window.setTimeout(this.saveSuccess, 3000);
+        this.users[this.currentUser].img = this.newImg;
+        localStorage.setItem('users', JSON.stringify(this.users));
+        this.newImg = '';
+      }
+    },
+    deleteUser() {
+      this.showDeleteAccMessage = true;
+      delete this.users[this.currentUser];
+      this.currentUser = '';
+      localStorage.setItem('users', JSON.stringify(this.users));
+      localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+      window.setTimeout(this.pushRouter, 3000);
+    },
+    pushRouter() {
+      this.$router.push('/signin');
     },
   },
 };

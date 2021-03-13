@@ -110,6 +110,7 @@ export default {
             this.currentUser = usernames[i];
             if (this.users[this.currentUser].password === this.password) {
               this.showLogInMessage = true;
+              this.error = '';
               localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
               window.setTimeout(this.pushRouter, 3000);
             } else {

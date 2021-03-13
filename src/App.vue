@@ -50,17 +50,10 @@
           Are you sure want to log-out?
         </div>
         <div class="modal-footer justify-content-center">
-          <button
-            type="button"
-            class="btn btn-success"
-            data-bs-dismiss="modal"
-            @click="logOut"
-          >
-            Yes
-          </button>
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal" @click="logOut">
+            Yes</button>
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
-            No
-          </button>
+            No</button>
         </div>
       </div>
     </div>
