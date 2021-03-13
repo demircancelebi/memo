@@ -6,7 +6,7 @@
     <input type="text" v-model="newCategoryName">
     <button @click="addCategory">Add category</button>
     <button data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-    @click="deleteCategoryControl">Delete category</button>
+    @click="deleteCategory(newCategoryName)">Delete category</button>
   </div>
   <!-- Modal -->
 
@@ -15,14 +15,14 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+        <h5 class="modal-title" id="staticBackdropLabel">WARNING</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div v-if ="checkCategory" class="modal-body">
+      <div v-if ="canCategoryBeDeleted" class="modal-body">
         Category deleted !
       </div>
-      <div v-if="!checkCategory" class="modal-body">
-        Category is full you can't delete it !
+      <div v-if="!canCategoryBeDeleted" class="modal-body">
+        This category cannot be deleted since it contains questions
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -71,11 +71,6 @@ export default {
       const defaultQuestions = {
       };
 
-      this.categories.forEach((category) => {
-        defaultQuestions[category.value] = [];
-      });
-      console.log(defaultQuestions);
-
       if (localStorage.getItem('questions')) {
         this.questions = JSON.parse(localStorage.getItem('questions'));
       } else {
@@ -92,22 +87,12 @@ export default {
       localStorage.setItem('categories', JSON.stringify(this.categories));
       this.newCategoryName = '';
     },
-    deleteCategoryControl() {
-      console.log(this.newCategoryName);
-      console.log(this.categories.length);
-      let i = 0;
+    deleteCategory(categoryName) {
       this.questionsControl = JSON.parse(localStorage.getItem('questions'));
-      while (this.categories.length > i) {
-        if (this.newCategoryName.trim().toLowerCase() === this.categories[i].value) {
-          i = 0;
-          if (this.questionsControl[this.newCategoryName.trim().toLowerCase()].length === 0) {
-            this.checkCategory = true;
-          } else {
-            this.checkCategory = false;
-          }
-          return;
-        }
-        i += 1;
+      if (this.questionsControl[categoryName.trim().toLowerCase()].length === 0) {
+        this.canCategoryBeDeleted = true;
+      } else {
+        this.canCategoryBeDeleted = false;
       }
     },
   },
@@ -117,7 +102,7 @@ export default {
       categories: [],
       questionsControl: {},
       questions: {},
-      checkCategory: true,
+      canCategoryBeDeleted: false,
     };
   },
 };

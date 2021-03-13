@@ -5,7 +5,6 @@
     </div>
     <div v-if="currentCategory">
       <br>Soru alani
-      {{ questions[currentCategory] }}<br><br>
       <input type="text" v-model="tempQuestion">
       <input type="text" v-model="tempAnswer">
       <button @click="addQuestion">Add Question</button>
