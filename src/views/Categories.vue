@@ -12,6 +12,13 @@
 
 export default {
   name: 'Categories',
+  data() {
+    return {
+      newCategoryName: '',
+      categories: [],
+      questions: {},
+    };
+  },
   created() {
     if (localStorage.getItem('currentUser')) {
       try {
@@ -78,13 +85,6 @@ export default {
       localStorage.setItem('categories', JSON.stringify(this.categories));
       this.newCategoryName = '';
     },
-  },
-  data() {
-    return {
-      newCategoryName: '',
-      categories: [],
-      questions: {},
-    };
   },
 };
 </script>

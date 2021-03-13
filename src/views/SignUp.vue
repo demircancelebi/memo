@@ -54,6 +54,19 @@
 <script>
 export default {
   name: 'SignUp',
+  data() {
+    return {
+      users: {},
+      fName: null,
+      lName: null,
+      username: null,
+      password: null,
+      confirm_password: null,
+      checkPassword: false,
+      checkUsername: false,
+      checkEmpty: false,
+    };
+  },
   created() {
     if (localStorage.getItem('currentUser')) {
       try {
@@ -114,20 +127,6 @@ export default {
       localStorage.setItem('users', JSON.stringify(this.users));
       this.$router.push('/');
     },
-  },
-
-  data() {
-    return {
-      users: {},
-      fName: null,
-      lName: null,
-      username: null,
-      password: null,
-      confirm_password: null,
-      checkPassword: false,
-      checkUsername: false,
-      checkEmpty: false,
-    };
   },
 };
 </script>

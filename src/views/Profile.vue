@@ -23,7 +23,7 @@
         <div class="row mt-4" v-for="attribute in attributes"
         :key="attribute">
             <div class="col-3 text-start">
-                <b>{{ attributeMessages[attribute] }}</b>
+                <b>{{ attributeLabels[attribute] }}</b>
             </div>
             <div v-if="isAttributeHidden[attribute]" class="col text-start">
                 {{ users[currentUser][attribute] }}
@@ -42,8 +42,8 @@
                 Save changes
             </button>
           </div>
-          <div v-if="showSaveSuccess" class="col-9 mt-4 error-message">
-            Successfully saved!
+          <div v-if="showInfoMessage" class="col-9 mt-4 error-message">
+            {{ message }}
           </div>
         </div>
       </div>
@@ -59,10 +59,15 @@ export default {
     return {
       users: {},
       attributes: [],
-      attributeMessages: {},
+      attributeLabels: {},
       isAttributeHidden: {},
       newInput: {},
-      showSaveSuccess: false,
+      infoMessages: {
+        usernameErr: 'Username already taken.',
+        saveSuccess: 'Successfully saved!',
+      },
+      message: null,
+      showInfoMessage: false,
       currentUser: null,
     };
   },
@@ -98,7 +103,7 @@ export default {
     getAttributes() {
       this.attributes = Object.keys(this.users[this.currentUser]);
       this.attributes.pop('img');
-      this.attributeMessages = {
+      this.attributeLabels = {
         username: 'Username: ',
         fName: 'First name: ',
         lName: 'Last name: ',
@@ -123,27 +128,36 @@ export default {
         const attribute = this.attributes[i];
         if (this.newInput[attribute]) {
           if (attribute === 'username') {
-            console.log('USERNAME');
             const usernames = Object.keys(this.users);
             for (let j = 0; j < usernames.length; j += 1) {
               if (this.newInput[attribute] === usernames[j]
               && this.newInput[attribute] !== this.currentUser) {
-                console.log('username already taken!');
+                this.showMessages('usernameErr');
                 return;
               }
             }
+            const oldCurrentUser = this.currentUser;
+            this.currentUser = this.newInput[attribute];
+            localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+            this.users[this.currentUser] = this.users[oldCurrentUser];
+            delete this.users[oldCurrentUser];
           }
           this.users[this.currentUser][this.attributes[i]] = this.newInput[this.attributes[i]];
           this.clicked(this.attributes[i]);
           localStorage.setItem('users', JSON.stringify(this.users));
-          this.showSaveSuccess = true;
+          this.showMessages('saveSuccess');
           window.setTimeout(this.saveSuccess, 3000);
         }
         this.isAttributeHidden[attribute] = true;
       }
     },
+    showMessages(messageType) {
+      this.showInfoMessage = true;
+      this.message = this.infoMessages[messageType];
+    },
     saveSuccess() {
-      this.showSaveSuccess = false;
+      this.showInfoMessage = false;
+      window.location.reload();
     },
   },
 };

@@ -20,6 +20,16 @@
 
 export default {
   name: 'Questions',
+  data() {
+    return {
+      categories: [],
+      questions: {},
+      index: {},
+      currentCategory: '',
+      tempQuestion: '',
+      tempAnswer: '',
+    };
+  },
   created() {
     if (localStorage.getItem('currentUser')) {
       try {
@@ -105,16 +115,6 @@ export default {
       this.tempQuestion = '';
       this.tempAnswer = '';
     },
-  },
-  data() {
-    return {
-      categories: [],
-      questions: {},
-      index: {},
-      currentCategory: '',
-      tempQuestion: '',
-      tempAnswer: '',
-    };
   },
 };
 </script>

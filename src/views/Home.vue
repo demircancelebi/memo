@@ -49,6 +49,12 @@
 <script>
 export default {
   name: 'Home',
+  data() {
+    return {
+      users: {},
+      currentUser: null,
+    };
+  },
   computed: {
     profileImg() {
       if (this.currentUser && this.users[this.currentUser] && this.users[this.currentUser].img) {
@@ -72,12 +78,6 @@ export default {
         localStorage.removeItem('users');
       }
     }
-  },
-  data() {
-    return {
-      users: {},
-      currentUser: null,
-    };
   },
   methods: {
     editProfile() {

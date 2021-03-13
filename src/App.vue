@@ -75,6 +75,12 @@
 <script>
 export default {
   name: 'App',
+  data() {
+    return {
+      currentUser: null,
+      showLogOutMessage: false,
+    };
+  },
   watch: {
     $route() {
       if (localStorage.getItem('currentUser')) {
@@ -86,12 +92,6 @@ export default {
       }
     },
   },
-  data() {
-    return {
-      currentUser: null,
-      showLogOutMessage: false,
-    };
-  },
   methods: {
     logOut() {
       this.showLogOutMessage = true;
@@ -102,7 +102,7 @@ export default {
     },
     pushRouter() {
       this.showLogOutMessage = false;
-      this.$router.push('/signin');
+      window.location.reload();
     },
   },
 };

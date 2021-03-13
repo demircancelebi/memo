@@ -58,6 +58,22 @@
 <script>
 export default {
   name: 'SignIn',
+  data() {
+    return {
+      users: {},
+      errorMessages: {
+        usernameErr: 'Username does not exist.',
+        passwordErr: 'Invalid password.',
+        emptyInputErr: 'Please fill all input areas.',
+      },
+      error: null,
+      username: null,
+      password: null,
+      currentUser: null,
+      showPassword: false,
+      showLogInMessage: false,
+    };
+  },
   created() {
     if (localStorage.getItem('currentUser')) {
       try {
@@ -78,22 +94,6 @@ export default {
         localStorage.removeItem('users');
       }
     }
-  },
-  data() {
-    return {
-      users: {},
-      errorMessages: {
-        usernameErr: 'Username does not exist.',
-        passwordErr: 'Invalid password.',
-        emptyInputErr: 'Please fill all input areas.',
-      },
-      error: null,
-      username: null,
-      password: null,
-      currentUser: null,
-      showPassword: false,
-      showLogInMessage: false,
-    };
   },
   methods: {
     checkUser() {

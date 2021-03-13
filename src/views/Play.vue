@@ -46,6 +46,15 @@ export default {
   // components: {
   //   HelloWorld,
   // },
+  data() {
+    return {
+      index: {},
+      isRevealed: false,
+      curCategory: '',
+      categories: [],
+      questions: {},
+    };
+  },
   created() {
     if (localStorage.getItem('currentUser')) {
       try {
@@ -142,15 +151,6 @@ export default {
       this.isRevealed = false;
       this.index[this.curCategory] += 1;
     },
-  },
-  data() {
-    return {
-      index: {},
-      isRevealed: false,
-      curCategory: '',
-      categories: [],
-      questions: {},
-    };
   },
 };
 </script>
