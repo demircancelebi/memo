@@ -20,6 +20,11 @@ const routes = [
     name: 'Questions',
     component: () => import('../views/Questions.vue'),
   },
+  {
+    path: '/team',
+    name: 'Team',
+    component: () => import('../views/Team.vue'),
+  },
 ];
 
 const router = createRouter({
