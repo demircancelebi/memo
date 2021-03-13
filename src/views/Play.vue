@@ -13,8 +13,8 @@
         <div class="col-8">
           <div class="card mb-3">
             <div class="card-body">
-              <p class="card-text">{{ questions[curCategory][index[curCategory]].q }}</p>
-              <p v-if="isRevealed">{{ questions[curCategory][index[curCategory]].a }}</p>
+              <p class="card-text">{{ currentQuestion.q }}</p>
+              <p v-if="isRevealed">{{ currentQuestion.a }}</p>
               <button class="btn btn-primary" @click="reveal" v-if="!isRevealed">Goster</button>
               <button class="btn btn-success" v-show="isRevealed"
               @click="remembered">Hatirladim</button>
@@ -48,7 +48,9 @@ export default {
   // },
   data() {
     return {
-      index: {},
+      answeredByCategory: {},
+      shownQuestions: [],
+      answered: 0,
       isRevealed: false,
       curCategory: '',
       categories: [],
@@ -70,47 +72,59 @@ export default {
     this.getQuestions();
   },
   computed: {
+    currentQuestion() {
+      return this.currentQuestions[this.answeredByCategory[this.curCategory]];
+    },
+    currentQuestions() {
+      return this.questions.filter((question) => question.tags.includes(this.curCategory));
+    },
     finished() {
       if (this.curCategory === '') {
         return false;
       }
 
-      return this.questions[this.curCategory].length === this.index[this.curCategory];
+      return this.currentQuestions.length === this.answeredByCategory[this.curCategory];
     },
     allDone() {
-      let finishedCategoryCount = 0;
-      Object.keys(this.index).forEach((key) => {
-        if (this.questions[key].length === this.index[key]) {
-          finishedCategoryCount += 1;
-        }
-      });
-
-      return finishedCategoryCount === Object.keys(this.questions).length;
+      return this.answered === this.questions.length;
     },
   },
   watch: {
     curCategory() {
       this.isRevealed = false;
+      this.skipAnsweredQuestions();
     },
   },
   methods: {
     getQuestions() {
-      const defaultQuestions = {
-      };
-
-      this.categories.forEach((category) => {
-        defaultQuestions[category.value] = [];
-      });
+      const qs = [
+        {
+          q: 'ilk soru',
+          a: 'cevap',
+          tags: ['science', 'tech'],
+        },
+        {
+          q: '2. soru',
+          a: 'cevap',
+          tags: ['history', 'science', 'tech'],
+        },
+        {
+          q: '3. soru',
+          a: 'cevap',
+          tags: ['history', 'geography'],
+        },
+        {
+          q: '4. soru',
+          a: 'cevap',
+          tags: ['tech', 'geography'],
+        },
+      ];
 
       if (localStorage.getItem('questions')) {
         this.questions = JSON.parse(localStorage.getItem('questions'));
       } else {
-        this.questions = defaultQuestions;
+        this.questions = qs;
       }
-
-      Object.keys(this.questions).forEach((question) => {
-        this.index[question] = 0;
-      });
     },
     getCategories() {
       const defaultCategories = [
@@ -137,6 +151,10 @@ export default {
       } else {
         this.categories = defaultCategories;
       }
+
+      this.categories.forEach((category) => {
+        this.answeredByCategory[category.value] = 0;
+      });
     },
     reveal() {
       this.isRevealed = true;
@@ -147,9 +165,18 @@ export default {
     notRemembered() {
       this.nextQuestion();
     },
+    skipAnsweredQuestions() {
+      while (this.shownQuestions.includes(this.questions.indexOf(this.currentQuestion))) {
+        this.answeredByCategory[this.curCategory] += 1;
+      }
+    },
     nextQuestion() {
       this.isRevealed = false;
-      this.index[this.curCategory] += 1;
+      const currentQuestionIndex = this.questions.indexOf(this.currentQuestion);
+      this.shownQuestions.push(currentQuestionIndex);
+      this.answeredByCategory[this.curCategory] += 1;
+      this.answered += 1;
+      this.skipAnsweredQuestions();
     },
   },
 };
