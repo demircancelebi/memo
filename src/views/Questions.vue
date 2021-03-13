@@ -1,35 +1,40 @@
 <template>
   <div class="questions">
     <div v-for="category in categories" :key="category.value">
-      <button @click="showQuestions(category)">{{ category.text }}</button>
+      <button class="btn btn-secondary mb-1" @click="showQuestions(category)"
+      >{{ category.text }}</button>
     </div>
-    <div class="mb-4" v-if="currentCategory">
-      Soru alani
-      {{ questions[currentCategory] }}
-      <input class="mt-4" type="text" v-model="tempQuestion">
-      <input type="text" v-model="tempAnswer">
-      <button @click="addQuestion">Add Question</button>
-    </div>
+        <div class="input-group justify-content-center" v-if="currentCategory">
+          <label for="questionInput">Question:
+            <input id="questionInput" type="text" v-model="tempQuestion"/>
+          </label>
+          <label for="questionInput">Answer:
+            <input id="answerInput" type="text" v-model="tempAnswer"/>
+          </label>
+          <button class="btn btn-success" @click="addQuestion">Add Question</button>
+        </div>
     <h2>===</h2>
-    {{ questions }}
-    <div class="mt-2">this is questions</div>
+    <div class="row justify-content-center container-fluid mb-4"
+    v-if="currentCategory && catHasQuestions">
+        <div class="card ml-2 col-4" v-for="quest in  questions[currentCategory]" :key="quest.q">
+            <div class="card-body">
+              <h5 class="card-title">{{quest.q}}</h5>
+              <p class="card-text">{{quest.a}}</p>
+              <a href="#" class="btn btn-danger align-bottom" @click="removeQuestion(quest)">X</a>
+            </div>
+        </div>
+    </div>
+    <h5 v-if="!currentCategory"> Please select a category to see questions!</h5>
+    <h5 v-else-if="!catHasQuestions" class="mt-3">No question is available for the category
+      <strong>{{currentCategory}}</strong>. Please add some!</h5>
+    <!-- {{ questions }}
+    this is questions -->
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'Questions',
-  data() {
-    return {
-      categories: [],
-      questions: {},
-      index: {},
-      currentCategory: '',
-      tempQuestion: '',
-      tempAnswer: '',
-    };
-  },
   created() {
     if (localStorage.getItem('currentUser')) {
       try {
@@ -72,8 +77,7 @@ export default {
       }
     },
     getQuestions() {
-      const defaultQuestions = {
-      };
+      const defaultQuestions = {};
 
       this.categories.forEach((category) => {
         defaultQuestions[category.value] = [];
@@ -90,6 +94,7 @@ export default {
       });
     },
     showQuestions(category) {
+      // console.log(`Showing questions for ${category.value}`);
       this.currentCategory = category.value;
     },
     addQuestion() {
@@ -111,9 +116,30 @@ export default {
       });
 
       localStorage.setItem('questions', JSON.stringify(this.questions));
-      // this.tempQuestion
       this.tempQuestion = '';
       this.tempAnswer = '';
+    },
+    removeQuestion(quest) {
+      const qIndex = this.questions[this.currentCategory].indexOf(quest);
+      if (qIndex >= 0) {
+        this.questions[this.currentCategory].splice(qIndex, 1);
+        localStorage.setItem('questions', JSON.stringify(this.questions));
+      }
+    },
+  },
+  data() {
+    return {
+      categories: [],
+      questions: {},
+      index: {},
+      currentCategory: '',
+      tempQuestion: '',
+      tempAnswer: '',
+    };
+  },
+  computed: {
+    catHasQuestions() {
+      return this.questions[this.currentCategory].length > 0;
     },
   },
 };
