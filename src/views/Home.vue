@@ -1,39 +1,59 @@
 <template>
   <div class="home">
     <div class="container">
-    <h4>Choose category</h4>
-    <select name="" id="" v-model="curCategory">
-      <option value="">Choose</option>
-      <option v-for="opt in categories" v-bind:value="opt.value" v-bind:key="opt.value">
-        {{ opt.text }}
-      </option>
-    </select>
+      <h4>Choose category</h4>
+      <select name="" id="" v-model="curCategory">
+        <option value="">Choose</option>
+        <option
+          v-for="opt in categories"
+          v-bind:value="opt.value"
+          v-bind:key="opt.value"
+        >
+          {{ opt.text }}
+        </option>
+      </select>
       <div class="row" v-if="!finished && curCategory">
         <h2>Gunluk pratik</h2>
         <div class="col-8">
           <div class="card mb-3">
             <div class="card-body">
-              <p class="card-text">{{ questions[curCategory][index[curCategory]].q }}</p>
-              <p v-if="isRevealed">{{ questions[curCategory][index[curCategory]].a }}</p>
-              <button class="btn btn-primary" @click="reveal" v-if="!isRevealed">Goster</button>
-              <button class="btn btn-success" v-show="isRevealed"
-              @click="remembered">Hatirladim</button>
-              <button class="btn btn-danger" v-show="isRevealed"
-              @click="notRemembered">Hatirlayamadim</button>
+              <p class="card-text">
+                {{ questions[curCategory][index[curCategory]].q }}
+              </p>
+              <p v-if="isRevealed">
+                {{ questions[curCategory][index[curCategory]].a }}
+              </p>
+              <button
+                class="btn btn-primary"
+                @click="reveal"
+                v-if="!isRevealed"
+              >
+                Goster
+              </button>
+              <button
+                class="btn btn-success"
+                v-show="isRevealed"
+                @click="remembered"
+              >
+                Hatirladim
+              </button>
+              <button
+                class="btn btn-danger"
+                v-show="isRevealed"
+                @click="notRemembered"
+              >
+                Hatirlayamadim
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <div class="card-body" v-if="finished">
-        Gunluk pratigini tamamladin
-      </div>
-      <div class="card-body" v-if="allDone">
-        Butun kategorileri tamamladin
-      </div>
+      <div class="card-body" v-if="finished">Gunluk pratigini tamamladin</div>
+      <div class="card-body" v-if="allDone">Butun kategorileri tamamladin</div>
     </div>
 
-        <!-- <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/> -->
+    <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
+    <!-- <HelloWorld msg="Welcome to Your Vue.js App" /> -->
   </div>
 </template>
 
@@ -42,7 +62,7 @@
 // import HelloWorld from '@/components/HelloWorld.vue';
 
 export default {
-  name: 'Home',
+  // name: 'Home',
   // components: {
   //   HelloWorld,
   // },
@@ -56,7 +76,9 @@ export default {
         return false;
       }
 
-      return this.questions[this.curCategory].length === this.index[this.curCategory];
+      return (
+        this.questions[this.curCategory].length === this.index[this.curCategory]
+      );
     },
     allDone() {
       let finishedCategoryCount = 0;
@@ -76,8 +98,7 @@ export default {
   },
   methods: {
     getQuestions() {
-      const defaultQuestions = {
-      };
+      const defaultQuestions = {};
 
       this.categories.forEach((category) => {
         defaultQuestions[category.value] = [];
@@ -146,5 +167,4 @@ export default {
 </script>
 
 <style>
-
 </style>
