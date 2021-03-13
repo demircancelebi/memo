@@ -1,22 +1,22 @@
 <template>
-  <div><Nav /></div>
+  <div><Topbar /></div>
   <!-- <div id="nav">
     <router-link to="/">Home</router-link> |
     <router-link to="/categories">Categories</router-link> |
     <router-link to="/questions">Questions</router-link>
   </div>  -->
   <router-view id="app" class="text-center" />
-  <Footer />
+  <Bottom />
 </template>
 <script>
-import Nav from './components/Nav.vue';
-import Footer from './components/Footer.vue';
+import Topbar from './components/Topbar.vue';
+import Bottom from './components/Bottom.vue';
 
 export default {
   name: 'App',
   components: {
-    Nav,
-    Footer,
+    Topbar,
+    Bottom,
   },
 };
 </script>

@@ -23,10 +23,8 @@
 </template>
 <script>
 export default {
-  name: 'Footer',
-  props: {
-    msg: String,
-  },
+  name: 'Bottom',
+  props: {},
 };
 </script>
 <style scoped lang="scss">
