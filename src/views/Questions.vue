@@ -1,12 +1,12 @@
 <template>
   <div class="questions">
     <div v-if="!showQuestionAddMenu">
-      <div v-for="category in categories" :key="category.value">
+      <span class="ms-2" v-for="category in categories" :key="category.value">
         <button class="btn btn-dark mb-1" @click="showQuestions(category)"
         >{{ category.text }}</button>
-      </div>
+      </span>
     </div>
-    <button v-if="!showQuestionAddMenu" class="mb-4 btn btn-primary"
+    <button v-if="!showQuestionAddMenu" class="mb-4 mt-4 btn btn-primary"
     @click="showAddQuestion">Show Question Add Menu</button>
     <button v-if="showQuestionAddMenu" class="mb-4 btn btn-primary"
     @click="showAddQuestion">Hide Question Add Menu</button>
@@ -26,24 +26,24 @@
           </div>
           <ul class="list-group">
             <li class="list-group" v-for="category in categories" :key="category.value">
-              <button v-if="!selectedForAdd[category.value]"
-              @click="selectOtherCategoriesToAdd(category.value)"
+              <button v-if="!selectedFor[currentOperation][category.value]"
+              @click="selectOtherCategoriesToDo(category.value)"
               class="list-group-item list-group-item-action mt-2">{{ category.text }}</button>
-              <button v-if="selectedForAdd[category.value]"
-              @click="selectOtherCategoriesToAdd(category.value)"
+              <button v-if="selectedFor[currentOperation][category.value]"
+              @click="selectOtherCategoriesToDo(category.value)"
               class="list-group-item list-group-item-action active mt-2"
               aria-current="true">
                 {{ category.text }}
               </button>
             </li>
           </ul>
-          <button class="mt-3 col-12 btn btn-success" @click="addSelected">Add</button>
+          <button class="mt-3 col-12 btn btn-success" @click="doSelectedOperation">Add</button>
         </div>
       </div>
     </div>
-    <div v-if="showAddSuccess" class="mt-4 mb-4 success-message">
+    <div v-if="showSuccessMessage.add" class="mt-4 mb-4 success-message">
       Question successfully added to categories:
-      <span v-for="cat in categoriesToAdd" :key="cat">
+      <span v-for="cat in categoriesTo[currentOperation]" :key="cat">
         ({{ cat }})
       </span>
     </div>
@@ -57,7 +57,7 @@
             @click="selectQuestionToRemove(quest)">X</a>
           </div>
       </div>
-      <div v-if="showDeleteSelection">
+      <div v-if="showDeleteSelectionMenu">
         <div>This question is also included in:
         <span v-for="tag in otherTagsOfCurrentQuestion" :key="tag">
           <span>(<b>{{ tag }}</b>) </span>
@@ -69,25 +69,27 @@
           <div class="col-3">
             <ul class="list-group">
               <li class="list-group" v-for="tag in otherTagsOfCurrentQuestion" :key="tag">
-                <button v-if="!selectedForDelete[tag]" @click="selectOtherCategoriesToDelete(tag)"
+                <button v-if="!selectedFor[currentOperation][tag]"
+                @click="selectOtherCategoriesToDo(tag)"
                 class="list-group-item list-group-item-action mt-2">{{ tag }}</button>
-                <button v-if="selectedForDelete[tag]" @click="selectOtherCategoriesToDelete(tag)"
+                <button v-if="selectedFor[currentOperation][tag]"
+                @click="selectOtherCategoriesToDo(tag)"
                 class="list-group-item list-group-item-action active mt-2"
                 aria-current="true">
                   {{ tag }}
                 </button>
               </li>
             </ul>
-            <button class="mt-3 col-12 btn btn-danger" @click="deleteSelected">Delete</button>
+            <button class="mt-3 col-12 btn btn-danger" @click="doSelectedOperation">Delete</button>
           </div>
         </div>
       </div>
-      <div v-if="showDeleteSuccess" class="mt-4 error-message">
-        Question successfully deleted from categories:
-        <span v-for="cat in categoriesToDelete" :key="cat">
-          ({{ cat }})
-        </span>
-      </div>
+    </div>
+    <div v-if="showSuccessMessage.delete" class="mt-4 error-message">
+      Question successfully deleted from categories:
+      <span v-for="cat in categoriesTo[currentOperation]" :key="cat">
+        ({{ cat }})
+      </span>
     </div>
     <h5 v-if="!currentCategory && !showQuestionAddMenu"> Please select a category
       to see questions!</h5>
@@ -174,19 +176,23 @@ export default {
       }
     },
     showQuestions(category) {
-      this.showAddSuccess = false;
-      this.showDeleteSuccess = false;
-      this.showDeleteSelection = false;
+      Object.keys(this.showSuccessMessage).forEach((key) => {
+        this.showSuccessMessage[key] = false;
+      });
+      this.showDeleteSelectionMenu = false;
       this.currentCategory = category.value;
+      this.currentOperation = 'delete';
     },
     showAddQuestion() {
+      this.currentOperation = 'add';
       this.tempQuestion = '';
       this.tempAnswer = '';
       this.currentCategory = '';
-      this.showDeleteSuccess = false;
-      this.showAddSuccess = false;
-      Object.keys(this.selectedForAdd).forEach((key) => {
-        this.selectedForAdd[key] = false;
+      Object.keys(this.showSuccessMessage).forEach((key) => {
+        this.showSuccessMessage[key] = false;
+      });
+      Object.keys(this.selectedFor[this.currentOperation]).forEach((key) => {
+        this.selectedFor[this.currentOperation][key] = false;
       });
       if (this.showQuestionAddMenu) {
         this.showQuestionAddMenu = false;
@@ -195,16 +201,17 @@ export default {
       }
     },
     selectQuestionToRemove(quest) {
-      this.showAddSuccess = false;
-      this.showDeleteSuccess = false;
-      Object.keys(this.selectedForDelete).forEach((key) => {
-        this.selectedForDelete[key] = false;
+      Object.keys(this.showSuccessMessage).forEach((key) => {
+        this.showSuccessMessage[key] = false;
+      });
+      Object.keys(this.selectedFor[this.currentOperation]).forEach((key) => {
+        this.selectedFor[this.currentOperation][key] = false;
       });
       const qIndex = this.currentQuestions.indexOf(quest);
       this.indexOfCurrentQuestion = qIndex;
       if (qIndex >= 0) {
         if (this.currentQuestions[qIndex].tags.length > 1) {
-          this.showDeleteSelection = true;
+          this.showDeleteSelectionMenu = true;
           this.otherTagsOfCurrentQuestion = [];
           this.currentQuestions[qIndex].tags.forEach((category) => {
             if (category !== this.currentCategory) {
@@ -212,75 +219,61 @@ export default {
             }
           });
         } else {
-          this.deleteSelected();
+          this.doSelectedOperation(this.currentOperation);
         }
       }
     },
-    selectOtherCategoriesToDelete(chosenTag) {
-      if (!this.selectedForDelete) {
+    selectOtherCategoriesToDo(chosenTag) {
+      if (!this.selectedFor[this.currentOperation]) {
         this.otherTagsOfCurrentQuestion.forEach((tag) => {
-          this.selectedForDelete[tag] = false;
+          this.selectedFor[this.currentOperation][tag] = false;
         });
       }
-      if (this.selectedForDelete[chosenTag]) {
-        this.selectedForDelete[chosenTag] = false;
+      if (this.selectedFor[this.currentOperation][chosenTag]) {
+        this.selectedFor[this.currentOperation][chosenTag] = false;
       } else {
-        this.selectedForDelete[chosenTag] = true;
+        this.selectedFor[this.currentOperation][chosenTag] = true;
       }
     },
-    selectOtherCategoriesToAdd(chosenCategory) {
-      if (!this.selectedForAdd) {
-        this.otherTagsOfCurrentQuestion.forEach((category) => {
-          this.selectedForAdd[category] = false;
+    doSelectedOperation() {
+      this.categoriesTo[this.currentOperation] = [];
+      if (this.currentOperation === 'delete') {
+        Object.keys(this.selectedFor.delete).forEach((key) => {
+          if (this.selectedFor.delete[key]) {
+            this.categoriesTo.delete.push(key);
+          }
         });
-      }
-      if (this.selectedForAdd[chosenCategory]) {
-        this.selectedForAdd[chosenCategory] = false;
-      } else {
-        this.selectedForAdd[chosenCategory] = true;
-      }
-    },
-    deleteSelected() {
-      this.categoriesToDelete = [];
-      Object.keys(this.selectedForDelete).forEach((key) => {
-        if (this.selectedForDelete[key]) {
-          this.categoriesToDelete.push(key);
+        const qIndex = this.questions.indexOf(this.currentQuestions[this.indexOfCurrentQuestion]);
+        this.categoriesTo.delete.push(this.currentCategory);
+        this.categoriesTo.delete.forEach((category) => {
+          const cIndex = this.questions[qIndex].tags.indexOf(category);
+          this.questions[qIndex].tags.splice(cIndex, 1);
+        });
+        if (this.questions[qIndex].tags.length === 0) {
+          this.questions.splice(qIndex, 1);
         }
-      });
-      const qIndex = this.questions.indexOf(this.currentQuestions[this.indexOfCurrentQuestion]);
-      this.categoriesToDelete.push(this.currentCategory);
-      this.categoriesToDelete.forEach((cat) => {
-        const catIndex = this.questions[qIndex].tags.indexOf(cat);
-        this.questions[qIndex].tags.splice(catIndex, 1);
-      });
-      if (this.questions[qIndex].tags.length === 0) {
-        this.questions.splice(qIndex, 1);
-      }
-      this.showDeleteSelection = false;
-      this.showDeleteSuccess = true;
-      localStorage.setItem('questions', JSON.stringify(this.questions));
-    },
-    addSelected() {
-      if (!this.tempQuestion || !this.tempAnswer) {
-        return;
-      }
-      this.categoriesToAdd = [];
-      this.questions.push({
-        q: this.tempQuestion,
-        a: this.tempAnswer,
-        tags: [],
-      });
-      Object.keys(this.selectedForAdd).forEach((key) => {
-        if (this.selectedForAdd[key]) {
-          this.categoriesToAdd.push(key);
-          this.questions[this.questions.length - 1].tags.push(key);
+        this.showDeleteSelectionMenu = false;
+      } else if (this.currentOperation === 'add') {
+        if (!this.tempQuestion || !this.tempAnswer) {
+          return;
         }
-      });
+        this.questions.push({
+          q: this.tempQuestion,
+          a: this.tempAnswer,
+          tags: [],
+        });
+        Object.keys(this.selectedFor.add).forEach((key) => {
+          if (this.selectedFor.add[key]) {
+            this.categoriesTo.add.push(key);
+            this.questions[this.questions.length - 1].tags.push(key);
+          }
+        });
+        this.tempQuestion = '';
+        this.tempAnswer = '';
+        this.showQuestionAddMenu = false;
+      }
+      this.showSuccessMessage[this.currentOperation] = true;
       localStorage.setItem('questions', JSON.stringify(this.questions));
-      this.tempQuestion = '';
-      this.tempAnswer = '';
-      this.showQuestionAddMenu = false;
-      this.showAddSuccess = true;
     },
   },
   data() {
@@ -291,15 +284,22 @@ export default {
       tempQuestion: '',
       tempAnswer: '',
       indexOfCurrentQuestion: 0,
-      categoriesToDelete: [],
-      categoriesToAdd: [],
-      selectedForDelete: {},
-      selectedForAdd: {},
       otherTagsOfCurrentQuestion: [],
+      currentOperation: null,
+      categoriesTo: {
+        delete: [],
+        add: [],
+      },
+      selectedFor: {
+        delete: {},
+        add: {},
+      },
+      showSuccessMessage: {
+        delete: false,
+        add: false,
+      },
       showQuestionAddMenu: false,
-      showAddSuccess: false,
-      showDeleteSuccess: false,
-      showDeleteSelection: false,
+      showDeleteSelectionMenu: false,
     };
   },
   computed: {
