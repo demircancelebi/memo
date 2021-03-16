@@ -1,9 +1,8 @@
 <template>
   <div v-if="!showDeleteAccMessage" class="profile">
     <h4>My Profile</h4>
-    <div class="row mt-4">
-      <div class="col-1"></div>
-      <div class="col-3">
+    <div class="row ms-5 mt-4">
+      <div class="col-sm-3">
         <p id="myImg" class="text-start">
           <img :src="profileImg" class="profileImg">
         </p>
@@ -12,7 +11,7 @@
           {{ users[currentUser].lName }}</p>
         <p class="text-start username">
           {{ users[currentUser].username }}</p>
-        <div class="d-grid gap-2 col-9">
+        <div class="d-grid gap-2 col-8">
           <input v-if="showImgSelection" type="text" placeholder="imageURL"
           class="form-control" v-model="newImg">
           <button class="btn btn-dark edit-profile-btn"
@@ -41,10 +40,10 @@
           </div>
         </div>
       </div>
-      <div class="col-5">
+      <div class="ms-sm-4 col-md-5">
         <div class="row mt-4" v-for="attribute in attributes"
         :key="attribute">
-            <div class="col-3 text-start">
+            <div class="col text-start">
                 <b>{{ attributeLabels[attribute] }}</b>
             </div>
             <div v-if="isAttributeHidden[attribute]" class="col text-start">
@@ -69,7 +68,6 @@
           </div>
         </div>
       </div>
-      <div class="col-2"></div>
     </div>
   </div>
   <div v-if="showDeleteAccMessage" class="alert alert-primary" role="alert">

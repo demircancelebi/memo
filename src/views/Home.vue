@@ -1,47 +1,38 @@
 <template>
 <div class="home">
-    <div class="mt-5" v-if="!currentUser"></div>
     <div v-if="currentUser">
-        <div>
-            <div class="row">
-                <div class="col-1"></div>
-                <div class="col-3">
-                  <p id="myImg" class="text-start">
-                    <img :src="profileImg" class="profileImg">
-                  </p>
-                </div>
-                <div class="col-4"></div>
-                <div class="col-2"></div>
-            </div>
-            <div id="profileRow" class="row mt-2">
-              <div class="col-1"></div>
-              <div class="col-3">
-                <p class="text-start fname-lname">{{ users[currentUser].fName }}
-                  {{ users[currentUser].lName }}</p>
-                <p class="text-start username">
-                  {{ currentUser }}</p>
-                  <div class="d-grid gap-2 col-9">
-                    <button id="myButton" @click="editProfile"
-                    class="btn btn-dark edit-profile-btn">
-                      Edit Profile
-                    </button>
-                  </div>
-              </div>
-              <div class="col-4"></div>
-              <div class="col-2"></div>
-            </div>
+      <div class="row mt-5 ms-5">
+        <div class="col-sm-3">
+          <p id="myImg" class="text-start">
+            <img :src="profileImg" class="profileImg">
+          </p>
         </div>
+      </div>
+      <div class="row ms-5">
+        <div class="col-sm-3">
+          <p class="text-start fname-lname">{{ users[currentUser].fName }}
+            {{ users[currentUser].lName }}</p>
+          <p class="text-start username">
+            {{ currentUser }}</p>
+          <div class="d-grid gap-2 col-8">
+            <button id="myButton" @click="editProfile"
+            class="btn btn-dark edit-profile-btn">
+              Edit Profile
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div v-if="!currentUser">
-        <h4>Welcome to Memo App</h4>
-        <div class="mt-4">
-          <router-link to="/signin">
-              <button class="btn btn-dark">Sign In</button>
-          </router-link>
-          <router-link class="router-signup" to="/signup">
-              <button class="btn btn-dark">Sign Up</button>
-          </router-link>
-        </div>
+    <div class="mt-5" v-if="!currentUser">
+      <h4>Welcome to Memo App</h4>
+      <div class="mt-4">
+        <router-link to="/signin">
+            <button class="btn btn-dark">Sign In</button>
+        </router-link>
+        <router-link class="router-signup" to="/signup">
+            <button class="btn btn-dark">Sign Up</button>
+        </router-link>
+      </div>
     </div>
 </div>
 </template>
@@ -92,9 +83,11 @@ export default {
   padding-left: 20px;
 }
 .profileImg {
-    width: 250px;
-    height: 250px;
-    border-radius: 125px;
+  height: 75%;
+  width: 75%;
+  max-height: 100%;
+  max-width: 100%;
+  border-radius: 100%;
 }
 .edit-profile-btn {
   font-size: 80%;
