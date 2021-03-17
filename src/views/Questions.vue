@@ -26,15 +26,19 @@
     </div>
     <div class="input-group justify-content-center">
       <label for="questionInput">Question:
-        <input id="questionInput" type="text" v-model="tempQuestion"/>
+        <input id="questionInput" type="text" v-model.trim="tempQuestion"/>
       </label>
       <label for="questionInput">Answer:
-        <input id="answerInput" type="text" v-model="tempAnswer"/>
+        <input id="answerInput" type="text" v-model.trim="tempAnswer"/>
       </label>
       <label for="tagsInput">Tags:
-        <input id="tagsInput" type="text" v-model="tempTags"/>
+        <input id="tagsInput" type="text"
+        placeholder="computer science math" v-model.trim="tempTags"/>
       </label>
       <button class="btn btn-success" @click="addQuestion">Add Question</button>
+    </div>
+    <div v-if="!tempIsValid" class="alert alert-warning">
+      Please provide a valid question, an answer and at least one tag!
     </div>
   </div>
 </template>
@@ -74,14 +78,17 @@ export default {
       }
     },
     addQuestion() {
+      this.tempIsValid = true;
+      if (!this.tempQuestion || !this.tempAnswer || !this.tempTags) {
+        this.tempIsValid = false;
+        return;
+      }
       const tags = this.tempTags.split(' ').map((item) => item.replace('#', ''));
-
       this.questions.push({
         q: this.tempQuestion,
         a: this.tempAnswer,
         tags,
       });
-
       localStorage.setItem('questions', JSON.stringify(this.questions));
       this.tempQuestion = '';
       this.tempAnswer = '';
@@ -94,6 +101,7 @@ export default {
       tempQuestion: '',
       tempAnswer: '',
       tempTags: '',
+      tempIsValid: true,
     };
   },
 };
