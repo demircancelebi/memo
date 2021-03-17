@@ -1,8 +1,12 @@
 <template>
   <div class="questions">
     <div v-for="category in categories" :key="category.value">
-      <button class="btn btn-secondary mb-1" @click="showQuestions(category)"
-      >{{ category.text }}</button>
+      <button class="btn btn-secondary mb-1"
+      @click="chooseTag(category)">{{ category.text }}</button>
+      <span>
+      <button v-if="isDisabled" class="btn btn-warning"
+       @click="removeChooseTag(category)">X</button>
+      </span>
     </div>
         <div class="input-group justify-content-center" v-if="currentCategory">
           <label for="questionInput">Question:
@@ -16,7 +20,7 @@
     <h2>===</h2>
     <div class="row justify-content-center container-fluid mb-4"
     v-if="currentCategory && catHasQuestions">
-        <div class="card ml-2 col-4" v-for="quest in  questions[currentCategory]" :key="quest.q">
+        <div class="card ml-2 col-4" v-for="quest in  currentQuestions" :key="quest.q">
             <div class="card-body">
               <h5 class="card-title">{{quest.q}}</h5>
               <p class="card-text">{{quest.a}}</p>
@@ -48,7 +52,22 @@ export default {
     }
     this.getCategories();
     this.getQuestions();
+    console.log(this.questions[0].tags);
   },
+
+  computed: {
+    catHasQuestions() {
+      return this.questions.length < 0;
+    },
+    currentQuestions() { // array olarak döner
+      return this.questions.filter((question) => question.tags.includes(this.currentCategory));
+    },
+    checkCategoryButtons() {
+      console.log(this.tempTags.length);
+      return this.tempTags.length === 0;
+    },
+  },
+
   methods: {
     getCategories() {
       const defaultCategories = [
@@ -77,25 +96,57 @@ export default {
       }
     },
     getQuestions() {
-      const defaultQuestions = {};
-
-      this.categories.forEach((category) => {
-        defaultQuestions[category.value] = [];
-      });
+      const qs = [
+        {
+          q: 'ilk soru',
+          a: 'cevap',
+          tags: ['science', 'tech'],
+        },
+        {
+          q: '2. soru',
+          a: 'cevap',
+          tags: ['history', 'science', 'tech'],
+        },
+        {
+          q: '3. soru',
+          a: 'cevap',
+          tags: ['history', 'geography'],
+        },
+        {
+          q: '4. soru',
+          a: 'cevap',
+          tags: ['tech', 'geography'],
+        },
+      ];
 
       if (localStorage.getItem('questions')) {
         this.questions = JSON.parse(localStorage.getItem('questions'));
       } else {
-        this.questions = defaultQuestions;
+        this.questions = qs;
       }
-
-      Object.keys(this.questions).forEach((question) => {
-        this.index[question] = 0;
-      });
     },
     showQuestions(category) {
       // console.log(`Showing questions for ${category.value}`);
       this.currentCategory = category.value;
+    },
+    chooseTag(category) {
+      this.currentCategory = category.value;
+      if (this.tempTags.length === 0) {
+        this.tempTags.push(category.value);
+        console.log(`${this.tempTags[this.tempTags.length - 1]} ekledim`);
+      }
+      this.tempTags.forEach((tag) => {
+        if (tag !== category) {
+          this.tempTags.push(category.value);
+          console.log(`${this.tempTags[this.tempTags.length - 1]} ekledim`);
+        }
+      });
+      this.isDisabled = true;
+    },
+    removeChooseTag(category) {
+      const tempTagIndex = this.tempTags.indexOf(category);
+      this.tempTags.splice(tempTagIndex, 1);
+      console.log(this.tempTags);
     },
     addQuestion() {
       // questions = {
@@ -110,14 +161,23 @@ export default {
       //     },
       //   ]
       // }
-      this.questions[this.currentCategory].push({
+      // this.questions[this.currentCategory].push({
+      //   q: this.tempQuestion,
+      //   a: this.tempAnswer,
+      // });
+      // localStorage.setItem('questions', JSON.stringify(this.questions));
+      // this.tempQuestion = '';
+      // this.tempAnswer = '';
+      // this.questions[this.currentCategory];
+      this.questions.push({
         q: this.tempQuestion,
         a: this.tempAnswer,
+        //  tags: this.tempTags,
       });
-
+      this.questions[this.questions.length - 1].tags = this.tempTags;
       localStorage.setItem('questions', JSON.stringify(this.questions));
-      this.tempQuestion = '';
-      this.tempAnswer = '';
+      this.tempTags = [];
+      console.log(this.questions);
     },
     removeQuestion(quest) {
       const qIndex = this.questions[this.currentCategory].indexOf(quest);
@@ -130,17 +190,13 @@ export default {
   data() {
     return {
       categories: [],
-      questions: {},
-      index: {},
+      questions: [],
       currentCategory: '',
       tempQuestion: '',
       tempAnswer: '',
+      tempTags: [],
+      isDisabled: false,
     };
-  },
-  computed: {
-    catHasQuestions() {
-      return this.questions[this.currentCategory].length > 0;
-    },
   },
 };
 </script>

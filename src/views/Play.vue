@@ -54,7 +54,7 @@ export default {
       isRevealed: false,
       curCategory: '',
       categories: [],
-      questions: {},
+      questions: [],
     };
   },
   created() {
