@@ -70,12 +70,7 @@ export default {
       } catch (e) {
         localStorage.removeItem('currentUser');
       }
-    }
-    if (localStorage.getItem('users')) {
-      try {
-        this.users = JSON.parse(localStorage.getItem('users'));
-      } catch (e) {
-        localStorage.removeItem('users');
+
       }
     }
   },

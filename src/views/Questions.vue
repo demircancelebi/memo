@@ -1,8 +1,7 @@
 <template>
   <div class="questions">
     <div v-for="category in categories" :key="category.value">
-      <button class="btn btn-secondary mb-1" @click="showQuestions(category)"
-      >{{ category.text }}</button>
+
     </div>
         <div class="input-group justify-content-center" v-if="currentCategory">
           <label for="questionInput">Question:
@@ -14,21 +13,7 @@
           <button class="btn btn-success" @click="addQuestion">Add Question</button>
         </div>
     <h2>===</h2>
-    <div class="row justify-content-center container-fluid mb-4"
-    v-if="currentCategory && catHasQuestions">
-        <div class="card ml-2 col-4" v-for="quest in  questions[currentCategory]" :key="quest.q">
-            <div class="card-body">
-              <h5 class="card-title">{{quest.q}}</h5>
-              <p class="card-text">{{quest.a}}</p>
-              <a href="#" class="btn btn-danger align-bottom" @click="removeQuestion(quest)">X</a>
-            </div>
-        </div>
-    </div>
-    <h5 v-if="!currentCategory"> Please select a category to see questions!</h5>
-    <h5 v-else-if="!catHasQuestions" class="mt-3">No question is available for the category
-      <strong>{{currentCategory}}</strong>. Please add some!</h5>
-    <!-- {{ questions }}
-    this is questions -->
+
   </div>
 </template>
 
@@ -66,7 +51,7 @@ export default {
         },
         {
           text: 'Technology',
-          value: 'tech',
+          value: 'technology',
         },
       ];
 
@@ -116,15 +101,7 @@ export default {
       });
 
       localStorage.setItem('questions', JSON.stringify(this.questions));
-      this.tempQuestion = '';
-      this.tempAnswer = '';
-    },
-    removeQuestion(quest) {
-      const qIndex = this.questions[this.currentCategory].indexOf(quest);
-      if (qIndex >= 0) {
-        this.questions[this.currentCategory].splice(qIndex, 1);
-        localStorage.setItem('questions', JSON.stringify(this.questions));
-      }
+
     },
   },
   data() {
