@@ -2,13 +2,13 @@
   <div class="play">
     <div class="container">
     <h4>Choose category</h4>
-    <select name="" id="" v-model="curCategory">
+    <select name="" id="" v-model="currentTag">
       <option value="">Choose</option>
       <option v-for="tag in allTags" :key="tag">
         {{ tag }}
       </option>
     </select><br>
-      <div class="row justify-content-center" v-if="!finished && curCategory">
+      <div class="row justify-content-center" v-if="!finished && currentTag">
         <h2>Gunluk pratik</h2>
         <div class="col-8">
           <div class="card mb-3">
@@ -52,7 +52,7 @@ export default {
       shownQuestions: [],
       answered: 0,
       isRevealed: false,
-      curCategory: '',
+      currentTag: '',
       questions: [],
       allTags: [],
     };
@@ -73,24 +73,24 @@ export default {
   },
   computed: {
     currentQuestion() {
-      return this.currentQuestions[this.answeredByTag[this.curCategory]];
+      return this.currentQuestions[this.answeredByTag[this.currentTag]];
     },
     currentQuestions() {
-      return this.questions.filter((question) => question.tags.includes(this.curCategory));
+      return this.questions.filter((question) => question.tags.includes(this.currentTag));
     },
     finished() {
-      if (this.curCategory === '') {
+      if (this.currentTag === '') {
         return false;
       }
 
-      return this.currentQuestions.length === this.answeredByTag[this.curCategory];
+      return this.currentQuestions.length === this.answeredByTag[this.currentTag];
     },
     allDone() {
       return this.answered === this.questions.length;
     },
   },
   watch: {
-    curCategory() {
+    currentTag() {
       this.isRevealed = false;
       this.skipAnsweredQuestions();
     },
@@ -126,14 +126,14 @@ export default {
     },
     skipAnsweredQuestions() {
       while (this.shownQuestions.includes(this.questions.indexOf(this.currentQuestion))) {
-        this.answeredByTag[this.curCategory] += 1;
+        this.answeredByTag[this.currentTag] += 1;
       }
     },
     nextQuestion() {
       this.isRevealed = false;
       const currentQuestionIndex = this.questions.indexOf(this.currentQuestion);
       this.shownQuestions.push(currentQuestionIndex);
-      this.answeredByTag[this.curCategory] += 1;
+      this.answeredByTag[this.currentTag] += 1;
       this.answered += 1;
       this.skipAnsweredQuestions();
     },
