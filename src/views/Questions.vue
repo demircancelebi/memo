@@ -1,26 +1,36 @@
 <template>
   <div class="questions">
     <div v-for="category in categories" :key="category.value">
-      <button @click="showQuestions(category)">{{ category.text }}</button>
+
     </div>
-    <div v-if="currentCategory">
-      <br>Soru alani
-      <input type="text" v-model="tempQuestion">
-      <input type="text" v-model="tempAnswer">
-      <button @click="addQuestion">Add Question</button>
-    </div>
+        <div class="input-group justify-content-center" v-if="currentCategory">
+          <label for="questionInput">Question:
+            <input id="questionInput" type="text" v-model="tempQuestion"/>
+          </label>
+          <label for="questionInput">Answer:
+            <input id="answerInput" type="text" v-model="tempAnswer"/>
+          </label>
+          <button class="btn btn-success" @click="addQuestion">Add Question</button>
+        </div>
     <h2>===</h2>
-    {{ questions }}<br>
-    this is questions
 
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'Questions',
   created() {
+    if (localStorage.getItem('currentUser')) {
+      try {
+        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      } catch (e) {
+        localStorage.removeItem('currentUser');
+      }
+    }
+    if (!this.currentUser) {
+      this.$router.back();
+    }
     this.getCategories();
     this.getQuestions();
   },
@@ -52,8 +62,7 @@ export default {
       }
     },
     getQuestions() {
-      const defaultQuestions = {
-      };
+      const defaultQuestions = {};
 
       this.categories.forEach((category) => {
         defaultQuestions[category.value] = [];
@@ -70,7 +79,7 @@ export default {
       });
     },
     showQuestions(category) {
-      console.log(`Showing questions for ${category.value}`);
+      // console.log(`Showing questions for ${category.value}`);
       this.currentCategory = category.value;
     },
     addQuestion() {
@@ -92,9 +101,7 @@ export default {
       });
 
       localStorage.setItem('questions', JSON.stringify(this.questions));
-      // this.tempQuestion
-      this.tempQuestion = '';
-      this.tempAnswer = '';
+
     },
   },
   data() {
@@ -106,6 +113,11 @@ export default {
       tempQuestion: '',
       tempAnswer: '',
     };
+  },
+  computed: {
+    catHasQuestions() {
+      return this.questions[this.currentCategory].length > 0;
+    },
   },
 };
 </script>

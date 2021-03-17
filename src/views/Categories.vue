@@ -36,7 +36,24 @@
 
 export default {
   name: 'Categories',
+  data() {
+    return {
+      newCategoryName: '',
+      categories: [],
+      questions: {},
+    };
+  },
   created() {
+    if (localStorage.getItem('currentUser')) {
+      try {
+        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      } catch (e) {
+        localStorage.removeItem('currentUser');
+      }
+    }
+    if (!this.currentUser) {
+      this.$router.back();
+    }
     this.getDefaultCategories();
     this.getQuestions();
   },
@@ -71,6 +88,7 @@ export default {
       const defaultQuestions = {
       };
 
+
       if (localStorage.getItem('questions')) {
         this.questions = JSON.parse(localStorage.getItem('questions'));
       } else {
@@ -82,6 +100,7 @@ export default {
         text: this.newCategoryName,
         value: this.newCategoryName.trim().toLowerCase(),
       });
+
       this.questions[this.newCategoryName.trim().toLowerCase()] = [];
       localStorage.setItem('questions', JSON.stringify(this.questions));
       localStorage.setItem('categories', JSON.stringify(this.categories));
@@ -96,14 +115,6 @@ export default {
       }
     },
   },
-  data() {
-    return {
-      newCategoryName: '',
-      categories: [],
-      questionsControl: {},
-      questions: {},
-      canCategoryBeDeleted: false,
-    };
-  },
+
 };
 </script>
