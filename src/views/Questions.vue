@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 <template>
   <div class="questions">
     <div v-for="category in categories" :key="category.value">
@@ -11,12 +12,21 @@
           <label for="questionInput">Answer:
             <input id="answerInput" type="text" v-model="tempAnswer"/>
           </label>
+          <div class="col-12">
+            Please select the categories below that you want to add this question.
+          </div>
+          <div class="form-check form-switch" v-for="category in categories" :key="category.value">
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+            v-model="categoryValueControl[category.value]">
+            <label class="form-check-label">{{category.text}}</label>
+          </div>
+          <br>
           <button class="btn btn-success" @click="addQuestion">Add Question</button>
         </div>
     <h2>===</h2>
     <div class="row justify-content-center container-fluid mb-4"
     v-if="currentCategory && catHasQuestions">
-        <div class="card ml-2 col-4" v-for="quest in  questions[currentCategory]" :key="quest.q">
+        <div class="card ml-2 col-4" v-for="quest in currentQuestions" :key="quest.q">
             <div class="card-body">
               <h5 class="card-title">{{quest.q}}</h5>
               <p class="card-text">{{quest.a}}</p>
@@ -48,8 +58,15 @@ export default {
     }
     this.getCategories();
     this.getQuestions();
+    this.checkButton();
   },
   methods: {
+    checkButton() {
+      this.categories.forEach((category) => {
+        this.categoryValueControl[category.value] = false;
+      });
+      console.log(this.categoryValueControl);
+    },
     getCategories() {
       const defaultCategories = [
         {
@@ -77,52 +94,60 @@ export default {
       }
     },
     getQuestions() {
-      const defaultQuestions = {};
-
-      this.categories.forEach((category) => {
-        defaultQuestions[category.value] = [];
-      });
+      const qs = [
+        {
+          q: 'ilk soru',
+          a: 'cevap',
+          tags: ['science', 'tech'],
+        },
+        {
+          q: '2. soru',
+          a: 'cevap',
+          tags: ['history', 'science', 'tech'],
+        },
+        {
+          q: '3. soru',
+          a: 'cevap',
+          tags: ['history', 'geography'],
+        },
+        {
+          q: '4. soru',
+          a: 'cevap',
+          tags: ['tech', 'geography'],
+        },
+      ];
 
       if (localStorage.getItem('questions')) {
         this.questions = JSON.parse(localStorage.getItem('questions'));
       } else {
-        this.questions = defaultQuestions;
+        this.questions = qs;
       }
-
-      Object.keys(this.questions).forEach((question) => {
-        this.index[question] = 0;
-      });
     },
     showQuestions(category) {
-      // console.log(`Showing questions for ${category.value}`);
       this.currentCategory = category.value;
     },
     addQuestion() {
-      // questions = {
-      //   art: [
-      //     {
-      //       q: 'Soru cumlesi',
-      //       a: 'Cevap'
-      //     },
-      //     {
-      //       q: '2. Soru cumlesi',
-      //       a: '2. Cevap'
-      //     },
-      //   ]
-      // }
-      this.questions[this.currentCategory].push({
+      Object.keys(this.categoryValueControl).forEach((key) => {
+        if (this.categoryValueControl[key]) {
+          this.selectedCategories.push(key);
+        }
+      });
+      this.questions.push({
         q: this.tempQuestion,
         a: this.tempAnswer,
+        tags: this.selectedCategories,
       });
 
       localStorage.setItem('questions', JSON.stringify(this.questions));
       this.tempQuestion = '';
       this.tempAnswer = '';
+      console.log(this.categoryValueControl);
+      console.log(this.selectedCategories);
     },
     removeQuestion(quest) {
-      const qIndex = this.questions[this.currentCategory].indexOf(quest);
+      const qIndex = this.questions.indexOf(quest);
       if (qIndex >= 0) {
-        this.questions[this.currentCategory].splice(qIndex, 1);
+        this.questions.splice(qIndex, 1);
         localStorage.setItem('questions', JSON.stringify(this.questions));
       }
     },
@@ -130,16 +155,21 @@ export default {
   data() {
     return {
       categories: [],
-      questions: {},
+      questions: [],
       index: {},
       currentCategory: '',
       tempQuestion: '',
       tempAnswer: '',
+      categoryValueControl: {},
+      selectedCategories: [],
     };
   },
   computed: {
     catHasQuestions() {
-      return this.questions[this.currentCategory].length > 0;
+      return this.questions.length > 0;
+    },
+    currentQuestions() { // array olarak döner
+      return this.questions.filter((question) => question.tags.includes(this.currentCategory));
     },
   },
 };
