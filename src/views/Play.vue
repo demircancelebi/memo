@@ -4,8 +4,8 @@
     <h4>Choose category</h4>
     <select name="" id="" v-model="curCategory">
       <option value="">Choose</option>
-      <option v-for="opt in categories" v-bind:value="opt.value" v-bind:key="opt.value">
-        {{ opt.text }}
+      <option v-for="opt in categories" v-bind:value="opt" v-bind:key="opt">
+        {{ opt }}
       </option>
     </select>
       <div class="row" v-if="!finished && curCategory">
@@ -53,7 +53,6 @@ export default {
       answered: 0,
       isRevealed: false,
       curCategory: '',
-      categories: [],
       questions: {},
     };
   },
@@ -68,7 +67,6 @@ export default {
     if (!this.currentUser) {
       this.$router.back();
     }
-    this.getCategories();
     this.getQuestions();
   },
   computed: {
@@ -88,6 +86,18 @@ export default {
     allDone() {
       return this.answered === this.questions.length;
     },
+    categories() {
+      const cats = [];
+      this.questions.forEach((element) => {
+        element.tags.forEach((tag) => {
+          if (!cats.includes(tag)) {
+            cats.push(tag);
+            this.answeredByCategory[tag] = 0;
+          }
+        });
+      });
+      return cats;
+    },
   },
   watch: {
     curCategory() {
@@ -97,64 +107,11 @@ export default {
   },
   methods: {
     getQuestions() {
-      const qs = [
-        {
-          q: 'ilk soru',
-          a: 'cevap',
-          tags: ['science', 'tech'],
-        },
-        {
-          q: '2. soru',
-          a: 'cevap',
-          tags: ['history', 'science', 'tech'],
-        },
-        {
-          q: '3. soru',
-          a: 'cevap',
-          tags: ['history', 'geography'],
-        },
-        {
-          q: '4. soru',
-          a: 'cevap',
-          tags: ['tech', 'geography'],
-        },
-      ];
-
       if (localStorage.getItem('questions')) {
         this.questions = JSON.parse(localStorage.getItem('questions'));
       } else {
-        this.questions = qs;
+        this.questions = [];
       }
-    },
-    getCategories() {
-      const defaultCategories = [
-        {
-          text: 'Geography',
-          value: 'geography',
-        },
-        {
-          text: 'History',
-          value: 'history',
-        },
-        {
-          text: 'Science',
-          value: 'science',
-        },
-        {
-          text: 'Technology',
-          value: 'tech',
-        },
-      ];
-
-      if (localStorage.getItem('categories')) {
-        this.categories = JSON.parse(localStorage.getItem('categories'));
-      } else {
-        this.categories = defaultCategories;
-      }
-
-      this.categories.forEach((category) => {
-        this.answeredByCategory[category.value] = 0;
-      });
     },
     reveal() {
       this.isRevealed = true;
