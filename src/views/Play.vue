@@ -7,8 +7,8 @@
       <option v-for="tag in allTags" :key="tag">
         {{ tag }}
       </option>
-    </select><br>
-      <div class="row justify-content-center" v-if="!finished && currentTag">
+    </select>
+      <div class="mt-4 row justify-content-center" v-if="!finished && currentTag">
         <h2>Gunluk pratik</h2>
         <div class="col-8">
           <div class="card mb-3">
