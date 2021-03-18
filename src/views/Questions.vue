@@ -12,17 +12,19 @@
           <label for="questionInput">Answer:
             <input id="answerInput" type="text" v-model="tempAnswer"/>
           </label>
-          <div class="col-12">
+          <div class="col-12 mb-3 mt-2">
             Please select the categories below that you want to add this question.
           </div>
-          <div class="form-check form-switch" v-for="category in categories" :key="category.value">
-            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
-            v-model="categoryValueControl[category.value]">
-            <label class="form-check-label">{{category.text}}</label>
-          </div>
-          <br>
-          <button class="btn btn-success" @click="addQuestion">Add Question</button>
+          <ul class="list-group" >
+            <li class="list-group-item  text-start"
+            v-for="category in categories" :key="category.value">
+              <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+              v-model="categoryValueControl[category.value]">
+              <label class="form-check-label">{{category.text}}</label>
+            </li>
+          </ul>
         </div>
+        <button class="btn btn-success mt-4" @click="addQuestion">Add Question</button>
     <h2>===</h2>
     <div class="row justify-content-center container-fluid mb-4"
     v-if="currentCategory && catHasQuestions">
@@ -32,6 +34,34 @@
               <p class="card-text">{{quest.a}}</p>
               <a href="#" class="btn btn-danger align-bottom" @click="removeQuestion(quest)">X</a>
             </div>
+        </div>
+        <div v-if="showOtherCategories">
+          <div class="mt-4 container">
+            Please select the categories below that you want to delete this question.
+            <table class="table table-striped">
+              <thead>
+                <th>Category Name</th>
+                <th>Action</th>
+              </thead>
+              <tbody>
+              <tr v-for="t, tagIndex in currentQuestion.tags" :key="t">
+                <td>{{ t }}</td>
+                <td>
+                  <a href="#" class="btn btn-danger" role="button"
+                    @click.prevent="deleteCategory(tagIndex)">Delete
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <div>
+                  <a href="#" class="btn btn-danger" type="button"
+                  @click="deleteEverywhere(currentQuestion)">
+                  Delete Everywhere</a>
+                </div>
+              </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
     </div>
     <h5 v-if="!currentCategory"> Please select a category to see questions!</h5>
@@ -59,6 +89,7 @@ export default {
     this.getCategories();
     this.getQuestions();
     this.checkButton();
+    this.showOtherCategories = false;
   },
   methods: {
     checkButton() {
@@ -125,6 +156,7 @@ export default {
     },
     showQuestions(category) {
       this.currentCategory = category.value;
+      this.showOtherCategories = false;
     },
     addQuestion() {
       Object.keys(this.categoryValueControl).forEach((key) => {
@@ -141,13 +173,40 @@ export default {
       localStorage.setItem('questions', JSON.stringify(this.questions));
       this.tempQuestion = '';
       this.tempAnswer = '';
+      this.selectedCategories = [];
       console.log(this.categoryValueControl);
       console.log(this.selectedCategories);
     },
-    removeQuestion(quest) {
+    deleteEverywhere(quest) {
       const qIndex = this.questions.indexOf(quest);
       if (qIndex >= 0) {
         this.questions.splice(qIndex, 1);
+        localStorage.setItem('questions', JSON.stringify(this.questions));
+        this.showOtherCategories = false;
+      }
+    },
+    removeQuestion(quest) {
+      this.currentQuestion = quest;
+      if (this.currentQuestion.tags.length <= 1 || this.deleteAll) {
+        this.showOtherCategories = false;
+        const qIndex = this.questions.indexOf(quest);
+        if (qIndex >= 0) {
+          this.questions.splice(qIndex, 1);
+          localStorage.setItem('questions', JSON.stringify(this.questions));
+          this.deleteAll = false;
+        }
+      } else {
+        this.showOtherCategories = true;
+      }
+    },
+    deleteCategory(tagIndex) {
+      const qIndex = this.questions.indexOf(this.currentQuestion);
+      this.currentQuestion.tags.splice(tagIndex, 1);
+      this.questions.splice(qIndex, 1, this.currentQuestion);
+      if (this.currentQuestion.tags.length === 0) {
+        this.showOtherCategories = false;
+        this.removeQuestion(this.currentQuestion);
+      } else {
         localStorage.setItem('questions', JSON.stringify(this.questions));
       }
     },
@@ -162,6 +221,8 @@ export default {
       tempAnswer: '',
       categoryValueControl: {},
       selectedCategories: [],
+      showOtherCategories: false,
+      currentQuestion: {},
     };
   },
   computed: {
@@ -170,6 +231,9 @@ export default {
     },
     currentQuestions() { // array olarak döner
       return this.questions.filter((question) => question.tags.includes(this.currentCategory));
+    },
+    cindex(category) {
+      return category;
     },
   },
 };
