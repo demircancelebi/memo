@@ -52,15 +52,13 @@
                   </a>
                 </td>
               </tr>
-              <tr>
-                <div>
-                  <a href="#" class="btn btn-danger" type="button"
-                  @click="deleteEverywhere(currentQuestion)">
-                  Delete Everywhere</a>
-                </div>
-              </tr>
               </tbody>
             </table>
+            <div style="margin-right: 150px; margin-left: 190px;">
+                  <a href="#" class="btn btn-danger" type="button"
+                  @click="removeQuestion(currentQuestion, true)">
+                  Delete Everywhere</a>
+            </div>
           </div>
         </div>
     </div>
@@ -177,23 +175,15 @@ export default {
       console.log(this.categoryValueControl);
       console.log(this.selectedCategories);
     },
-    deleteEverywhere(quest) {
-      const qIndex = this.questions.indexOf(quest);
-      if (qIndex >= 0) {
-        this.questions.splice(qIndex, 1);
-        localStorage.setItem('questions', JSON.stringify(this.questions));
-        this.showOtherCategories = false;
-      }
-    },
-    removeQuestion(quest) {
+    removeQuestion(quest, isAllDeleted) {
       this.currentQuestion = quest;
-      if (this.currentQuestion.tags.length <= 1 || this.deleteAll) {
+      if (this.currentQuestion.tags.length <= 1 || isAllDeleted) {
         this.showOtherCategories = false;
         const qIndex = this.questions.indexOf(quest);
         if (qIndex >= 0) {
           this.questions.splice(qIndex, 1);
           localStorage.setItem('questions', JSON.stringify(this.questions));
-          this.deleteAll = false;
+          this.isAllDeleted = false;
         }
       } else {
         this.showOtherCategories = true;
