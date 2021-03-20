@@ -4,8 +4,8 @@
     <h4>Choose category</h4>
     <select name="" id="" v-model="curCategory">
       <option value="">Choose</option>
-      <option v-for="opt in categories" v-bind:value="opt.value" v-bind:key="opt.value">
-        {{ opt.text }}
+      <option v-for="t in seperateTags" :key="t">
+        {{ t }}
       </option>
     </select>
       <div class="row" v-if="!finished && curCategory">
@@ -55,6 +55,7 @@ export default {
       curCategory: '',
       categories: [],
       questions: {},
+      seperateTags: [],
     };
   },
   created() {
@@ -68,8 +69,8 @@ export default {
     if (!this.currentUser) {
       this.$router.back();
     }
-    this.getCategories();
     this.getQuestions();
+    this.getCategories();
   },
   computed: {
     currentQuestion() {
@@ -127,33 +128,15 @@ export default {
       }
     },
     getCategories() {
-      const defaultCategories = [
-        {
-          text: 'Geography',
-          value: 'geography',
-        },
-        {
-          text: 'History',
-          value: 'history',
-        },
-        {
-          text: 'Science',
-          value: 'science',
-        },
-        {
-          text: 'Technology',
-          value: 'tech',
-        },
-      ];
-
-      if (localStorage.getItem('categories')) {
-        this.categories = JSON.parse(localStorage.getItem('categories'));
-      } else {
-        this.categories = defaultCategories;
+      for (let i = 0; i < this.questions.length; i += 1) {
+        for (let j = 0; j < this.questions[i].tags.length; j += 1) {
+          if (!this.seperateTags.includes(this.questions[i].tags[j])) {
+            this.seperateTags.push(this.questions[i].tags[j]);
+          }
+        }
       }
-
-      this.categories.forEach((category) => {
-        this.answeredByCategory[category.value] = 0;
+      this.seperateTags.forEach((tag) => {
+        this.answeredByCategory[tag] = 0;
       });
     },
     reveal() {
