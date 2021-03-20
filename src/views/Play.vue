@@ -1,14 +1,18 @@
 <template>
   <div class="play">
-    <div class="container">
-    <h4>Choose category</h4>
-    <select name="" id="" v-model="curCategory">
+    <div class="card-body" v-if="!questionsCheck">
+      <h4>No question to play</h4>
+      <router-link to="/questions">Click to add question</router-link>
+    </div>
+    <div class="container" v-if="questionsCheck">
+    <h4>Choose tag</h4>
+    <select name="" id="" v-model="curTag">
       <option value="">Choose</option>
-      <option v-for="opt in categories" v-bind:value="opt.value" v-bind:key="opt.value">
-        {{ opt.text }}
+      <option v-for="t in allTags" :key="t">
+        {{ t }}
       </option>
     </select>
-      <div class="row" v-if="!finished && curCategory">
+      <div class="row" v-if="!finished && curTag">
         <h2>Gunluk pratik</h2>
         <div class="col-8">
           <div class="card mb-3">
@@ -27,7 +31,7 @@
       <div class="card-body" v-if="finished">
         Gunluk pratigini tamamladin
       </div>
-      <div class="card-body" v-if="allDone">
+      <div class="card-body" v-if="allDone && questionsCheck">
         Butun kategorileri tamamladin
       </div>
     </div>
@@ -48,13 +52,13 @@ export default {
   // },
   data() {
     return {
-      answeredByCategory: {},
+      answeredByTag: {},
       shownQuestions: [],
       answered: 0,
       isRevealed: false,
-      curCategory: '',
-      categories: [],
-      questions: {},
+      curTag: '',
+      allTags: [],
+      questions: [],
     };
   },
   created() {
@@ -68,92 +72,57 @@ export default {
     if (!this.currentUser) {
       this.$router.back();
     }
-    this.getCategories();
     this.getQuestions();
+    this.getTag();
   },
   computed: {
     currentQuestion() {
-      return this.currentQuestions[this.answeredByCategory[this.curCategory]];
+      return this.currentQuestions[this.answeredByTag[this.curTag]];
     },
     currentQuestions() {
-      return this.questions.filter((question) => question.tags.includes(this.curCategory));
+      return this.questions.filter((question) => question.tags.includes(this.curTag));
     },
     finished() {
-      if (this.curCategory === '') {
+      if (this.curTag === '') {
         return false;
       }
 
-      return this.currentQuestions.length === this.answeredByCategory[this.curCategory];
+      return this.currentQuestions.length === this.answeredByTag[this.curTag];
     },
     allDone() {
       return this.answered === this.questions.length;
     },
+    questionsCheck() {
+      if (this.questions.length < 1) {
+        return false;
+      }
+      return true;
+    },
   },
   watch: {
-    curCategory() {
+    curTag() {
       this.isRevealed = false;
       this.skipAnsweredQuestions();
     },
   },
   methods: {
     getQuestions() {
-      const qs = [
-        {
-          q: 'ilk soru',
-          a: 'cevap',
-          tags: ['science', 'tech'],
-        },
-        {
-          q: '2. soru',
-          a: 'cevap',
-          tags: ['history', 'science', 'tech'],
-        },
-        {
-          q: '3. soru',
-          a: 'cevap',
-          tags: ['history', 'geography'],
-        },
-        {
-          q: '4. soru',
-          a: 'cevap',
-          tags: ['tech', 'geography'],
-        },
-      ];
-
       if (localStorage.getItem('questions')) {
         this.questions = JSON.parse(localStorage.getItem('questions'));
       } else {
-        this.questions = qs;
+        this.questions = [];
       }
     },
-    getCategories() {
-      const defaultCategories = [
-        {
-          text: 'Geography',
-          value: 'geography',
-        },
-        {
-          text: 'History',
-          value: 'history',
-        },
-        {
-          text: 'Science',
-          value: 'science',
-        },
-        {
-          text: 'Technology',
-          value: 'tech',
-        },
-      ];
-
-      if (localStorage.getItem('categories')) {
-        this.categories = JSON.parse(localStorage.getItem('categories'));
-      } else {
-        this.categories = defaultCategories;
-      }
-
-      this.categories.forEach((category) => {
-        this.answeredByCategory[category.value] = 0;
+    getTag() {
+      this.questions.forEach((question) => {
+        question.tags.forEach((tag) => {
+          if (!this.allTags.includes(tag)) {
+            this.allTags.push(tag);
+          }
+        });
+      });
+      this.allTags.forEach((tag) => {
+        this.answeredByTag[tag] = 0;
       });
     },
     reveal() {
@@ -167,14 +136,14 @@ export default {
     },
     skipAnsweredQuestions() {
       while (this.shownQuestions.includes(this.questions.indexOf(this.currentQuestion))) {
-        this.answeredByCategory[this.curCategory] += 1;
+        this.answeredByTag[this.curTag] += 1;
       }
     },
     nextQuestion() {
       this.isRevealed = false;
       const currentQuestionIndex = this.questions.indexOf(this.currentQuestion);
       this.shownQuestions.push(currentQuestionIndex);
-      this.answeredByCategory[this.curCategory] += 1;
+      this.answeredByTag[this.curTag] += 1;
       this.answered += 1;
       this.skipAnsweredQuestions();
     },
