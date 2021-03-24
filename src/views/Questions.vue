@@ -6,6 +6,8 @@
           <th>Actions</th>
           <th>Q</th>
           <th>A</th>
+          <th>Remember Streak</th>
+          <th>Do not show before</th>
           <th>Tags</th>
         </thead>
         <tbody>
@@ -13,6 +15,8 @@
             <td><a href="#" @click.prevent="removeQuestion(qIndex)">Remove question</a></td>
             <td>{{ q.q }}</td>
             <td>{{ q.a }}</td>
+            <td>{{ q.remember_streak }}</td>
+            <td>{{ q.do_not_show_before }}</td>
             <td>
               <span v-for="t, tagIndex in q.tags" :key="t">
                 {{ t }}&nbsp;
@@ -80,6 +84,8 @@ export default {
         q: this.tempQuestion,
         a: this.tempAnswer,
         tags,
+        remember_streak: 0,
+        do_not_show_before: Date.now(),
       });
 
       localStorage.setItem('questions', JSON.stringify(this.questions));

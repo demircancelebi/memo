@@ -49,12 +49,12 @@ export default {
   data() {
     return {
       answeredByCategory: {},
-      shownQuestions: [],
+      answeredQuestions: [],
       answered: 0,
       isRevealed: false,
       curCategory: '',
       categories: [],
-      questions: {},
+      questions: [],
       seperateTags: [],
     };
   },
@@ -98,34 +98,44 @@ export default {
   },
   methods: {
     getQuestions() {
-      const qs = [
-        {
-          q: 'ilk soru',
-          a: 'cevap',
-          tags: ['science', 'tech'],
-        },
-        {
-          q: '2. soru',
-          a: 'cevap',
-          tags: ['history', 'science', 'tech'],
-        },
-        {
-          q: '3. soru',
-          a: 'cevap',
-          tags: ['history', 'geography'],
-        },
-        {
-          q: '4. soru',
-          a: 'cevap',
-          tags: ['tech', 'geography'],
-        },
-      ];
+      // const now = Date.now();
+      // const qs = [
+      //   {
+      //     q: 'ilk soru',
+      //     a: 'cevap',
+      //     tags: ['science', 'tech'],
+      //     remember_streak: 0,
+      //     display_at: now,
+      //   },
+      //   {
+      //     q: '2. soru',
+      //     a: 'cevap',
+      //     tags: ['history', 'science', 'tech'],
+      //   },
+      //   {
+      //     q: '3. soru',
+      //     a: 'cevap',
+      //     tags: ['history', 'geography'],
+      //   },
+      //   {
+      //     q: '4. soru',
+      //     a: 'cevap',
+      //     tags: ['tech', 'geography'],
+      //   },
+      // ];
 
       if (localStorage.getItem('questions')) {
         this.questions = JSON.parse(localStorage.getItem('questions'));
       } else {
-        this.questions = qs;
+        this.questions = [];
       }
+
+      const now = Date.now();
+      this.questions.forEach((question, index) => {
+        if (question.do_not_show_before > now) {
+          this.answeredQuestions.push(index);
+        }
+      });
     },
     getCategories() {
       for (let i = 0; i < this.questions.length; i += 1) {
@@ -143,20 +153,31 @@ export default {
       this.isRevealed = true;
     },
     remembered() {
+      const question = this.currentQuestion;
+      question.remember_streak += 1;
+      this.updateDisplayTime();
       this.nextQuestion();
     },
     notRemembered() {
+      const question = this.currentQuestion;
+      question.remember_streak = 0;
+      this.updateDisplayTime();
       this.nextQuestion();
     },
+    updateDisplayTime() {
+      const question = this.currentQuestion;
+      question.do_not_show_before = Date.now() + (2 ** question.remember_streak) * 1000 * 60;
+      localStorage.setItem('questions', JSON.stringify(this.questions));
+    },
     skipAnsweredQuestions() {
-      while (this.shownQuestions.includes(this.questions.indexOf(this.currentQuestion))) {
+      while (this.answeredQuestions.includes(this.questions.indexOf(this.currentQuestion))) {
         this.answeredByCategory[this.curCategory] += 1;
       }
     },
     nextQuestion() {
       this.isRevealed = false;
       const currentQuestionIndex = this.questions.indexOf(this.currentQuestion);
-      this.shownQuestions.push(currentQuestionIndex);
+      this.answeredQuestions.push(currentQuestionIndex);
       this.answeredByCategory[this.curCategory] += 1;
       this.answered += 1;
       this.skipAnsweredQuestions();
