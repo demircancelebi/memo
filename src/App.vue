@@ -89,6 +89,7 @@ export default {
       this.showLogOutMessage = true;
       this.currentUser = '';
       localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+      localStorage.setItem('lastLoggedOut', JSON.stringify(Date.now()));
       this.$router.back();
       window.setTimeout(this.pushRouter, 3000);
     },

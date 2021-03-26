@@ -76,6 +76,7 @@ export default {
       } else {
         this.questions = [];
       }
+      this.questions.sort((a, b) => a.do_not_show_before - b.do_not_show_before);
     },
     addQuestion() {
       const tags = this.tempTags.split(' ').map((item) => item.replace('#', ''));
