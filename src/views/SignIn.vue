@@ -40,7 +40,10 @@
       <div class="row mt-3 justify-content-center">
           <div class="col-8">
               <div class="d-grid gap-2">
-                  <button class="btn btn-primary btn-lg" @click="checkUser">Sign In</button>
+                  <button class="btn btn-primary btn-lg" @click="checkUser();
+                  decreaseCheckRememberStreak();">
+                    Sign In
+                  </button>
               </div>
           </div>
       </div>
@@ -112,6 +115,7 @@ export default {
               this.showLogInMessage = true;
               this.error = '';
               localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+              localStorage.setItem('lastLoggedIn', JSON.stringify(Date.now()));
               window.setTimeout(this.pushRouter, 3000);
             } else {
               this.password = '';
@@ -122,6 +126,24 @@ export default {
             this.username = '';
             this.password = '';
             this.showErrorMessage('usernameErr');
+          }
+        }
+      }
+    },
+    decreaseCheckRememberStreak() {
+      if (localStorage.getItem('lastLoggedIn') && localStorage.getItem('lastLoggedOut')) {
+        const lastLoggedIn = JSON.parse(localStorage.getItem('lastLoggedIn'));
+        const lastLoggedOut = JSON.parse(localStorage.getItem('lastLoggedOut'));
+        const questions = JSON.parse(localStorage.getItem('questions'));
+        const absenceTime = lastLoggedIn - lastLoggedOut;
+        if (absenceTime > 15 * 1000 * 60) {
+          for (let i = 0; i < questions.length; i += 1) {
+            if (questions[i].remember_streak >= 1) {
+              questions[i].remember_streak -= 1;
+              localStorage.setItem('questions', JSON.stringify(questions));
+              // Burada localstorage a baştan hepsini tekrar yazmak yerine sadece
+              // remember_streak i güncellemenin yolu var mı???
+            }
           }
         }
       }
