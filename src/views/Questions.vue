@@ -16,7 +16,7 @@
             <td>{{ q.q }}</td>
             <td>{{ q.a }}</td>
             <td>{{ q.remember_streak }}</td>
-            <td>{{ q.do_not_show_before }}</td>
+            <td>{{ new Date(q.do_not_show_before).toLocaleString() }}</td>
             <td>
               <span v-for="t, tagIndex in q.tags" :key="t">
                 {{ t }}&nbsp;
@@ -78,7 +78,7 @@ export default {
       }
     },
     addQuestion() {
-      const tags = this.tempTags.split(' ').map((item) => item.replace('#', ''));
+      const tags = this.tempTags.split(' ').map((item) => item.replace('#', '').toLowerCase());
 
       this.questions.push({
         q: this.tempQuestion,
