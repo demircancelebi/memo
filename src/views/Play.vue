@@ -159,15 +159,9 @@ export default {
       const now = Date.now();
       const allowanceTime = ((2 ** (question.remember_streak)) * 1000 * 60) / 2;
       const lateness = now - question.do_not_show_before;
+      const diff = Math.floor(lateness / allowanceTime);
 
-      const diff = lateness / allowanceTime;
-      if (question.remember_streak > 0 && diff > 1.5) {
-        question.remember_streak = 1;
-      } else if (diff < 1.5 && diff > 1) {
-        question.remember_streak -= 1;
-      } else {
-        question.remember_streak += 1;
-      }
+      question.remember_streak = question.remember_streak - diff + 1;
 
       this.updateDisplayTime();
       this.nextQuestion();
