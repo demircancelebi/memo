@@ -157,12 +157,28 @@ export default {
       const question = this.currentQuestion;
 
       const now = Date.now();
-      const allowanceTime = ((2 ** (question.remember_streak)) * 1000 * 60) / 2;
-      const lateness = now - question.do_not_show_before;
-      const diff = Math.floor(lateness / allowanceTime);
 
-      question.remember_streak = question.remember_streak - diff + 1;
+      let penalty = 0;
+      let restOfLateness = now - question.do_not_show_before;
+      console.log('question.remember_streak');
+      console.log(question.remember_streak);
+      if (question.remember_streak > 0) {
+        for (let i = question.remember_streak; i > 0; i -= 1) {
+          console.log('i');
+          console.log(i);
+          if ((restOfLateness) >= (2 ** (i - 1)) * 60 * 1000) {
+            penalty += 1;
+            restOfLateness -= (2 ** (i - 1)) * 60 * 1000;
+            console.log('fark sonra');
+            console.log(restOfLateness);
+          }
+        }
+      }
 
+      console.log('penalty');
+      console.log(penalty);
+
+      question.remember_streak = question.remember_streak - penalty + 1;
       this.updateDisplayTime();
       this.nextQuestion();
     },
