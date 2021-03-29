@@ -130,6 +130,7 @@ export default {
         this.questions = [];
       }
 
+      this.questions.sort((a, b) => a.do_not_show_before - b.do_not_show_before);
       const now = Date.now();
       this.questions.forEach((question, index) => {
         if (question.do_not_show_before > now) {
@@ -154,7 +155,30 @@ export default {
     },
     remembered() {
       const question = this.currentQuestion;
-      question.remember_streak += 1;
+
+      const now = Date.now();
+
+      let penalty = 0;
+      let restOfLateness = now - question.do_not_show_before;
+      console.log('question.remember_streak');
+      console.log(question.remember_streak);
+      if (question.remember_streak > 0) {
+        for (let i = question.remember_streak; i > 0; i -= 1) {
+          console.log('i');
+          console.log(i);
+          if ((restOfLateness) >= (2 ** (i - 1)) * 60 * 1000) {
+            penalty += 1;
+            restOfLateness -= (2 ** (i - 1)) * 60 * 1000;
+            console.log('fark sonra');
+            console.log(restOfLateness);
+          }
+        }
+      }
+
+      console.log('penalty');
+      console.log(penalty);
+
+      question.remember_streak = question.remember_streak - penalty + 1;
       this.updateDisplayTime();
       this.nextQuestion();
     },
