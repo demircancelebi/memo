@@ -1,101 +1,15 @@
 <template>
-  <div v-if="currentUser && !showLogOutMessage" id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/play">Play</router-link> |
-    <router-link to="/questions">Questions</router-link> |
-
-    <div class="dropdown dropdown-current-user">
-      <a
-        class="dropdown-toggle"
-        type="button"
-        id="dropdownMenu"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        {{ currentUser }}
-      </a>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-        <li>
-          <a class="dropdown-item" type="button" @click.prevent="this.$router.push('/profile')">
-            My Profile
-          </a>
-        </li>
-        <li>
-          <button
-            class="dropdown-item dropdown-logout"
-            type="button"
-            href="#"
-            data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop"
-          >
-            Log-Out
-          </button>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <div
-    class="modal fade"
-    id="staticBackdrop"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
-    tabindex="-1"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-body mt-3">
-          Are you sure want to log-out?
-        </div>
-        <div class="modal-footer justify-content-center">
-          <button type="button" class="btn btn-success" data-bs-dismiss="modal" @click="logOut">
-            Yes</button>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
-            No</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div v-if="showLogOutMessage" class="alert alert-danger" role="alert">
-    Successfully logged-out, have a nice day !
-  </div>
-
+  <Navbar></Navbar>
   <router-view />
 </template>
 
 <script>
+import Navbar from '@/components/Navbar.vue';
+
 export default {
   name: 'App',
-  data() {
-    return {
-      currentUser: null,
-      showLogOutMessage: false,
-    };
-  },
-  watch: {
-    $route() {
-      if (localStorage.getItem('currentUser')) {
-        try {
-          this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        } catch (e) {
-          localStorage.removeItem('currentUser');
-        }
-      }
-    },
-  },
-  methods: {
-    logOut() {
-      this.showLogOutMessage = true;
-      this.currentUser = '';
-      localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-      this.$router.back();
-      window.setTimeout(this.pushRouter, 3000);
-    },
-    pushRouter() {
-      this.showLogOutMessage = false;
-      window.location.reload();
-    },
+  components: {
+    Navbar,
   },
 };
 </script>
