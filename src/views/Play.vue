@@ -1,38 +1,53 @@
 <template>
   <div class="play">
     <div class="container">
-    <h4>Choose category</h4>
-    <select name="" id="" v-model="curCategory">
-      <option value="">Choose</option>
-      <option v-for="t in seperateTags" :key="t">
-        {{ t }}
-      </option>
-    </select>
+      <h4>Choose category</h4>
+      <select name="" id="" v-model="curCategory">
+        <option value="">Choose</option>
+        <option v-for="t in seperateTags" :key="t">
+          {{ t }}
+        </option>
+      </select>
       <div class="row" v-if="!finished && curCategory">
         <h2>Gunluk pratik</h2>
-        <div class="col-8">
+        <div class="container">
           <div class="card mb-3">
             <div class="card-body">
-              <p class="card-text">{{ currentQuestion.q }}</p>
-              <p v-if="isRevealed">{{ currentQuestion.a }}</p>
-              <button class="btn btn-primary" @click="reveal" v-if="!isRevealed">Goster</button>
-              <button class="btn btn-success" v-show="isRevealed"
-              @click="remembered">Hatirladim</button>
-              <button class="btn btn-danger" v-show="isRevealed"
-              @click="notRemembered">Hatirlayamadim</button>
+              <strong class="card-text m-1">{{ currentQuestion.q }}</strong>
+              <h4 class="card-text m-1" v-if="isRevealed">
+                {{ currentQuestion.a }}
+              </h4>
+              <br />
+              <button
+                class="btn btn-primary"
+                @click="reveal"
+                v-if="!isRevealed"
+              >
+                Goster
+              </button>
+              <button
+                class="btn btn-success"
+                v-show="isRevealed"
+                @click="remembered"
+              >
+                Hatirladim
+              </button>
+              <button
+                class="btn btn-danger"
+                v-show="isRevealed"
+                @click="notRemembered"
+              >
+                Hatirlayamadim
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <div class="card-body" v-if="finished">
-        Gunluk pratigini tamamladin
-      </div>
-      <div class="card-body" v-if="allDone">
-        Butun kategorileri tamamladin
-      </div>
+      <div class="card-body" v-if="finished">Gunluk pratigini tamamladin</div>
+      <div class="card-body" v-if="allDone">Butun kategorileri tamamladin</div>
     </div>
 
-        <!-- <img alt="Vue logo" src="../assets/logo.png">
+    <!-- <img alt="Vue logo" src="../assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/> -->
   </div>
 </template>
@@ -84,7 +99,10 @@ export default {
         return false;
       }
 
-      return this.currentQuestions.length === this.answeredByCategory[this.curCategory];
+      return (
+        this.currentQuestions.length
+        === this.answeredByCategory[this.curCategory]
+      );
     },
     allDone() {
       return this.answered === this.questions.length;
@@ -166,11 +184,15 @@ export default {
     },
     updateDisplayTime() {
       const question = this.currentQuestion;
-      question.do_not_show_before = Date.now() + (2 ** question.remember_streak) * 1000 * 60;
+      question.do_not_show_before = Date.now() + 2 ** question.remember_streak * 1000 * 60;
       localStorage.setItem('questions', JSON.stringify(this.questions));
     },
     skipAnsweredQuestions() {
-      while (this.answeredQuestions.includes(this.questions.indexOf(this.currentQuestion))) {
+      while (
+        this.answeredQuestions.includes(
+          this.questions.indexOf(this.currentQuestion),
+        )
+      ) {
         this.answeredByCategory[this.curCategory] += 1;
       }
     },
@@ -187,5 +209,4 @@ export default {
 </script>
 
 <style>
-
 </style>
