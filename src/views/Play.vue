@@ -1,34 +1,40 @@
 <template>
   <div class="play">
     <div class="container">
-    <h4>Choose category</h4>
-    <select name="" id="" v-model="curCategory">
-      <option value="">Choose</option>
-      <option v-for="t in seperateTags" :key="t">
-        {{ t }}
-      </option>
-    </select>
-      <div class="row" v-if="!finished && curCategory">
-        <h2>Gunluk pratik</h2>
-        <div class="col-8">
-          <div class="card mb-3">
+    <h2>Choose category</h2>
+    <br>
+    <div class="row justify-content-center">
+      <div class="col-3">
+        <select class="form-select" aria-label="Default select example"
+        name="" id="" v-model="curCategory">
+          <option selected value="">Categories</option>
+          <option v-for="t in seperateTags" :key="t">{{t}}</option>
+        </select>
+      </div>
+    </div>
+    <br>
+      <div class="row justify-content-center" v-if="!finished && curCategory">
+        <h2>Daily Practice</h2>
+        <br><br>
+        <div class="col-7">
+          <div class="card mb-3 bg-light text-dark border-secondary">
             <div class="card-body">
               <p class="card-text">{{ currentQuestion.q }}</p>
               <p v-if="isRevealed">{{ currentQuestion.a }}</p>
-              <button class="btn btn-primary" @click="reveal" v-if="!isRevealed">Goster</button>
-              <button class="btn btn-success" v-show="isRevealed"
-              @click="remembered">Hatirladim</button>
-              <button class="btn btn-danger" v-show="isRevealed"
-              @click="notRemembered">Hatirlayamadim</button>
+              <button class="btn btn-primary" @click="reveal" v-if="!isRevealed">Show</button>
+              <button class="btn btn-success ms-1 ps-4 pe-4" v-show="isRevealed"
+              @click="remembered">Remembered</button>
+              <button class="btn btn-danger ms-3" v-show="isRevealed"
+              @click="notRemembered">Not Remembered</button>
             </div>
           </div>
         </div>
       </div>
       <div class="card-body" v-if="finished">
-        Gunluk pratigini tamamladin
+        You completed daily practice
       </div>
       <div class="card-body" v-if="allDone">
-        Butun kategorileri tamamladin
+        You completed all the categories
       </div>
     </div>
 
@@ -186,6 +192,5 @@ export default {
 };
 </script>
 
-<style>
-
+<style lang="sass">
 </style>
