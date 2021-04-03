@@ -9,9 +9,19 @@
           </h5>
         </div>
         <div class="col-4">
-          <a href="#" class="fab fa-github mx-1 text-decoration-none"></a
-          ><a href="#" class="fab fa-twitter mx-1 text-decoration-none"></a
-          ><a href="#" class="fab fa-facebook-f mx-1 text-decoration-none"></a>
+          <a href="#">
+            <span
+              class="icon-design fab fa-github mx-1 text-decoration-none"
+            ></span></a
+          ><a href="#"
+            ><span
+              class="icon-design fab fa-twitter mx-1 text-decoration-none"
+            ></span></a
+          ><a href="#"
+            ><span
+              class="icon-design fab fa-facebook-f mx-1 text-decoration-none"
+            ></span
+          ></a>
           <hr />
         </div>
         <div class="col-4">
@@ -23,7 +33,7 @@
 </template>
 <script>
 export default {
-  name: "Bottom",
+  name: 'Bottom',
 };
 </script>
 <style scoped lang="scss">
@@ -34,6 +44,9 @@ export default {
   width: 100%;
   height: 10%;
   padding: 15px;
-  background-color: rgb(204, 250, 250);
+  background-color: rgb(247, 247, 247);
+}
+.icon-design:hover {
+  color: rgb(33, 37, 41);
 }
 </style>

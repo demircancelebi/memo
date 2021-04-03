@@ -55,8 +55,12 @@
           </div>
         </div>
       </div>
-      <div class="card-body" v-if="finished">Gunluk pratigini tamamladin</div>
-      <div class="card-body" v-if="allDone">Butun kategorileri tamamladin</div>
+      <div class="card mt-1 justify-center" style="width: 20rem">
+        <div class="card-body" v-if="finished">Gunluk pratigini tamamladin</div>
+        <div class="card-body" v-if="allDone">
+          Butun kategorileri tamamladin
+        </div>
+      </div>
     </div>
 
     <!-- <img alt="Vue logo" src="../assets/logo.png">
