@@ -1,34 +1,44 @@
 <template>
   <div class="play">
+    <h3 class="mt-3" v-if="!curCategory">WELCOME TO MEMO APP</h3>
     <div class="container">
-    <h4>Choose category</h4>
-    <select name="" id="" v-model="curCategory">
-      <option value="">Choose</option>
-      <option v-for="t in seperateTags" :key="t">
-        {{ t }}
-      </option>
-    </select>
+        <h4 class="mt-5" v-if="!curCategory || finished">Choose category</h4>
+        <select  name="" id="" v-model="curCategory">
+          <option value="">Choose</option>
+          <option v-for="t in seperateTags" :key="t">
+            {{ t }}
+          </option>
+        </select>
       <div class="row" v-if="!finished && curCategory">
-        <h2>Gunluk pratik</h2>
-        <div class="col-8">
-          <div class="card mb-3">
-            <div class="card-body">
-              <p class="card-text">{{ currentQuestion.q }}</p>
-              <p v-if="isRevealed">{{ currentQuestion.a }}</p>
-              <button class="btn btn-primary" @click="reveal" v-if="!isRevealed">Goster</button>
-              <button class="btn btn-success" v-show="isRevealed"
-              @click="remembered">Hatirladim</button>
-              <button class="btn btn-danger" v-show="isRevealed"
-              @click="notRemembered">Hatirlayamadim</button>
+        <h2 class="mt-3">{{curCategory}} is selected !</h2>
+        <h2 class="mt-3">Daily Practice</h2>
+        <hr class="divider">
+        <div class="mt-3">
+          <div class="col d-flex justify-content-center">
+            <div class="col-8">
+              <div class="card mb-3 card text-white bg-dark mb-3">
+                <div class="card-body">
+                  <p class="card-text">{{ currentQuestion.q }}</p>
+                  <p v-if="isRevealed">{{ currentQuestion.a }}</p>
+                  <button class="btn btn-secondary" @click="reveal" v-if="!isRevealed">
+                  Show</button>
+                  <button class="btn btn-success mx-2 col-3" v-show="isRevealed"
+                  @click="remembered">Hatirladim</button>
+                  <button class="btn btn-danger mx-2 col-3" v-show="isRevealed"
+                  @click="notRemembered">Hatirlayamadim</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="card-body" v-if="finished">
-        Gunluk pratigini tamamladin
-      </div>
-      <div class="card-body" v-if="allDone">
-        Butun kategorileri tamamladin
+      <div class="mt-3">
+      <h2 class="card-body" v-if="finished">
+        Your daily practice done for this category !
+      </h2>
+      <h2 class="card-body" v-if="allDone">
+        You completed all of the categories !
+      </h2>
       </div>
     </div>
 
