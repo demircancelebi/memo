@@ -28,8 +28,8 @@
                 <div class="card-body mt-5 mb-5" v-if="allDone">
                   <h5>You have completed all the categories!</h5>
                 </div>
-                <div v-if="!curCategory" class="card-title mt-5 mb-5">
-                  Please select a category on the right.
+                <div v-if="!curCategory" class="card-body mt-5 mb-5">
+                  <h5>Please select a category on the right.</h5>
                 </div>
               </div>
             </div>
