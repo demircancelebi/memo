@@ -2,6 +2,10 @@
   <div class="play">
     <h3 class="mt-3" v-if="!curCategory">WELCOME TO MEMO APP</h3>
     <div class="container">
+        <div v-if="questions.length === 0">
+          <h4 class="mt-5">PLEASE ADD QUESTION FROM QUESTIONS SECTION TO CONTINUE</h4>
+        </div>
+        <div v-if="questions.length > 0">
         <h4 class="mt-5" v-if="!curCategory || finished">Choose category</h4>
         <select  name="" id="" v-model="curCategory">
           <option value="">Choose</option>
@@ -9,8 +13,9 @@
             {{ t }}
           </option>
         </select>
+        </div>
       <div class="row" v-if="!finished && curCategory">
-        <h2 class="mt-3">{{curCategory}} is selected !</h2>
+        <h2 class="mt-3">{{curCategory}} selected !</h2>
         <h2 class="mt-3">Daily Practice</h2>
         <hr class="divider">
         <div class="mt-3">
@@ -36,7 +41,7 @@
       <h2 class="card-body" v-if="finished">
         Your daily practice done for this category !
       </h2>
-      <h2 class="card-body" v-if="allDone">
+      <h2 class="card-body" v-if="allDone && curCategory">
         You completed all of the categories !
       </h2>
       </div>
