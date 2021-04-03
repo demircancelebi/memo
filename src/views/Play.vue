@@ -1,15 +1,27 @@
 <template>
   <div class="play">
     <div class="container">
-      <h4>Choose category</h4>
-      <select name="" id="" v-model="curCategory">
-        <option value="">Choose</option>
-        <option v-for="t in seperateTags" :key="t">
+      <h4>Choose Category</h4>
+      <select
+        class="select form-select form-select-sm"
+        aria-label=".form-select-sm example"
+        name=""
+        id=""
+        v-model="curCategory"
+      >
+        <option class="option" value="">Choose</option>
+        <option class="option" v-for="t in seperateTags" :key="t">
           {{ t }}
         </option>
       </select>
       <div class="row" v-if="!finished && curCategory">
-        <h2>Gunluk pratik</h2>
+        <h2
+          class="m-1"
+          v-for="(t, y, z) in curCategory[currentQuestion]"
+          :key="z"
+        >
+          {{ z }}
+        </h2>
         <div class="container">
           <div class="card mb-3">
             <div class="card-body">
@@ -19,21 +31,21 @@
               </h4>
               <br />
               <button
-                class="btn btn-primary"
+                class="btn btn-primary m-1"
                 @click="reveal"
                 v-if="!isRevealed"
               >
                 Goster
               </button>
               <button
-                class="btn btn-success"
+                class="btn btn-success me-1"
                 v-show="isRevealed"
                 @click="remembered"
               >
                 Hatirladim
               </button>
               <button
-                class="btn btn-danger"
+                class="btn btn-danger ms-1"
                 v-show="isRevealed"
                 @click="notRemembered"
               >
@@ -209,4 +221,10 @@ export default {
 </script>
 
 <style>
+.select {
+  text-align-last: center;
+}
+.option {
+  text-align: center;
+}
 </style>

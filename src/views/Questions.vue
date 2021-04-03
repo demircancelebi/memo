@@ -37,7 +37,7 @@
           />
         </div>
         <div class="col-auto">
-          <button class="btn btn-success mt-1" @click="addQuestion">
+          <button class="btn btn-success m-1" @click="addQuestion">
             Add Question
           </button>
         </div>
