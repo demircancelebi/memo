@@ -1,26 +1,25 @@
 <template>
   <div class="play">
     <div class="container">
-      <!-- <div v-if="!curCategory||finished||allDone">
-        <h4>Choose category</h4>
-        <select name="" id="" v-model="curCategory">
-          <option value="">Choose</option>
-          <option v-for="t in seperateTags" :key="t">
-            {{ t }}
-          </option>
-        </select>
-      </div> -->
+      <h5>Categories</h5>
+      <div class="mb-4">
+        <a href="#"
+        class="btn btn-sm me-2"
+        v-for="tag in seperateTags"
+        :key="tag"
+        :class="curCategory === tag ? 'btn-primary' : 'btn-light'"
+        @click.prevent="curCategory=tag">{{tag}}</a>
+      </div>
+      finished: {{ finished }} <br>
+      categoryFinished('c3'): {{ categoryFinished('c3') }} <br>
+      categoryFinished('cars'): {{ categoryFinished('cars') }}
+
+      <h2 class="mb-4">Daily Practice</h2>
+
       <div v-if="!curCategory||finished||allDone">
-        <div class="row justify-content-center">
-          <h2>Daily Practice</h2>
-        </div>
         <div class="row justify-content-center ms-4 me-4">
           <div class="col-12 col-sm-11 col-md-6 col-lg-7 col-xl-8">
-            <div v-if="curCategory" class="mt-4 text-start">
-              <b>Choosen Category:</b> {{curCategory}} </div>
-              <div v-if="!curCategory" class="mt-4 text-start">
-              <b>Choosen Category:</b> --- </div>
-            <div class="default-card card mt-5 mb-5 border border-3 border-dark">
+            <div class="default-card card border border-3 border-dark">
               <div class="card-body mt-4">
                 <div class="card-body mt-5 mb-5" v-if="finished">
                   <h5>You have completed your daily practice!</h5>
@@ -34,29 +33,14 @@
               </div>
             </div>
           </div>
-          <div class="list-group ms-4 me-4
-          col-12 col-sm-11 col-md-5 col-lg-3 col-xl-3">
-            <div class="mt-4 mb-5"><b> Categories</b></div>
-            <div class="scrollable-category-area">
-              <a href="#" class="list-group-item list-group-item-action
-              other-categories border border-1 border-light"
-              v-for="tag in seperateTags" :key="tag"
-              @click.prevent="this.curCategory=tag;">
-              {{tag}}</a>
-            </div>
-          </div>
         </div>
       </div>
+
       <div v-if="!finished && curCategory">
-        <div class="row justify-content-center">
-          <h2>Daily Practice</h2>
-        </div>
         <div class="row justify-content-center ms-4 me-4">
           <div class="col-12 col-sm-11 col-md-6 col-lg-7 col-xl-8">
-            <div class="mt-4 text-start">
-              <b>Choosen Category:</b> {{curCategory}}</div>
             <div v-if="!isRemembered && !isNotRemembered">
-              <div class="default-card card mt-5 mb-5 border border-3 border-dark">
+              <div class="default-card card border border-3 border-dark">
                 <div class="card-body mt-4">
                   <div class="card-title">{{ currentQuestion.q }}</div><hr>
                   <div class="mt-3 mb-2" v-if="!isRevealed"> - ? - </div>
@@ -64,53 +48,31 @@
                   <button class="btn btn-dark mt-5
                   col-11 col-sm-5 col-md-6 col-lg-5 col-xl-5" @click="reveal"
                   v-if="!isRevealed">Show Answer</button>
-                  <button id="remembered" class="btn btn-dark mx-2
+                  <button class="remembered btn btn-dark mx-2
                   col-11 col-sm-5 col-md-6 col-lg-4 col-xl-4" v-show="isRevealed"
                   @click="remembered">Remembered</button>
-                  <button id="notRemembered" class="btn btn-dark mx-2
+                  <button class="notRemembered btn btn-dark mx-2
                   col-11 col-sm-5 col-md-7 col-lg-5 col-xl-4" v-show="isRevealed"
                   @click="notRemembered">Not Remembered</button>
                 </div>
               </div>
             </div>
-            <div v-if="isRemembered && !isTimeoutStarted">
-              <div class="remembered-card-color card mt-5 mb-5 border border-3 border-dark">
+            <div v-if="isRemembered || isNotRemembered">
+              <div
+              :class="{
+                'remembered-card-color': isRemembered && !isTimeoutStarted,
+                'remembered-card-color2': isRemembered && isTimeoutStarted,
+                'not-remembered-card-color': isNotRemembered && !isTimeoutStarted,
+                'not-remembered-card-color2': isNotRemembered && isTimeoutStarted
+              }"
+              class="card border border-3 border-dark">
                 <div class="card-body mt-5 mb-5">
-                  <h2 class="mt-5 mb-5">CONGRATS!!</h2>
+                  <h2 class="mt-5 mb-5">
+                    <span v-if="isRemembered">CONGRATS!!</span>
+                    <span v-if="isNotRemembered">BETTER LUCK NEXT TIME!!</span>
+                  </h2>
                 </div>
               </div>
-            </div>
-            <div v-if="isRemembered && isTimeoutStarted">
-              <div class="remembered-card-color2 card mt-5 mb-5 border border-3 border-dark">
-                <div class="card-body mt-5 mb-5">
-                  <h2 class="mt-5 mb-5">CONGRATS!!</h2>
-                </div>
-              </div>
-            </div>
-            <div v-if="isNotRemembered && !isTimeoutStarted">
-              <div class="not-remembered-card-color card mt-5 mb-5 border border-3 border-dark">
-                <div class="card-body mt-5 mb-5">
-                  <h2 class="mt-5 mb-5">BETTER LUCK NEXT TİME!!</h2>
-                </div>
-              </div>
-            </div>
-            <div v-if="isNotRemembered && isTimeoutStarted">
-              <div class="not-remembered-card-color2 card mt-5 mb-5 border border-3 border-dark">
-                <div class="card-body mt-5 mb-5">
-                  <h2 class="mt-5 mb-5">BETTER LUCK NEXT TİME!!</h2>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="list-group ms-4 me-4
-          col-12 col-sm-11 col-md-5 col-lg-3 col-xl-3">
-            <div class="mt-4 mb-5"><b> Categories</b></div>
-            <div class="scrollable-category-area">
-              <a href="#" class="list-group-item list-group-item-action
-              other-categories border border-1 border-light"
-              v-for="tag in seperateTags" :key="tag"
-              @click.prevent="this.curCategory=tag;">
-              {{tag}}</a>
             </div>
           </div>
         </div>
@@ -163,6 +125,8 @@ export default {
   },
   computed: {
     currentQuestion() {
+      console.log('===this.currentQuestions');
+      console.log(this.currentQuestions);
       return this.currentQuestions[this.answeredByCategory[this.curCategory]];
     },
     currentQuestions() {
@@ -186,33 +150,23 @@ export default {
     },
   },
   methods: {
-    getQuestions() {
-      // const now = Date.now();
-      // const qs = [
-      //   {
-      //     q: 'ilk soru',
-      //     a: 'cevap',
-      //     tags: ['science', 'tech'],
-      //     remember_streak: 0,
-      //     display_at: now,
-      //   },
-      //   {
-      //     q: '2. soru',
-      //     a: 'cevap',
-      //     tags: ['history', 'science', 'tech'],
-      //   },
-      //   {
-      //     q: '3. soru',
-      //     a: 'cevap',
-      //     tags: ['history', 'geography'],
-      //   },
-      //   {
-      //     q: '4. soru',
-      //     a: 'cevap',
-      //     tags: ['tech', 'geography'],
-      //   },
-      // ];
+    categoryQuestions(category) {
+      return this.questions.filter((question) => question.tags.includes(category));
+    },
+    categoryFinished(category) {
+      // console.log('category');
+      // console.log(category);
+      if (category === '') {
+        return false;
+      }
 
+      console.log('category2');
+      console.log(category);
+      console.log(this.categoryQuestions(category).length);
+      console.log(this.answeredByCategory[category]);
+      return this.categoryQuestions(category).length === this.answeredByCategory[category];
+    },
+    getQuestions() {
       if (localStorage.getItem('questions')) {
         this.questions = JSON.parse(localStorage.getItem('questions'));
       } else {
@@ -237,6 +191,11 @@ export default {
       this.seperateTags.forEach((tag) => {
         this.answeredByCategory[tag] = 0;
       });
+
+      // this.seperateTags.forEach((tag) => {
+      //   this.curCategory = tag;
+      // });
+      // this.curCategory = '';
     },
     reveal() {
       this.isRevealed = true;
@@ -280,6 +239,19 @@ export default {
       while (this.answeredQuestions.includes(this.questions.indexOf(this.currentQuestion))) {
         this.answeredByCategory[this.curCategory] += 1;
       }
+      console.log('skipping...');
+      if (this.curCategory === 'c3') {
+        console.log('this.curCategory');
+        console.log(this.curCategory);
+        console.log('this.currentQuestion');
+        console.log(this.currentQuestion);
+        console.log('this.questions.indexOf(this.currentQuestion)');
+        console.log(this.questions.indexOf(this.currentQuestion));
+        console.log('this.answeredQuestions');
+        console.log(this.answeredQuestions);
+        console.log('this.answeredByCategory[this.curCategory]');
+        console.log(this.answeredByCategory[this.curCategory]);
+      }
     },
     nextQuestion() {
       this.isRemembered = false;
@@ -308,10 +280,10 @@ export default {
   height: 250px;
   overflow: auto
 }
-#remembered:hover{
+.remembered:hover{
   background-color: green;
 }
-#notRemembered:hover{
+.notRemembered:hover{
   background-color: darkred;
 }
 .remembered-card-color {

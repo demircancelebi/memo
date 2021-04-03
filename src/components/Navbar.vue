@@ -11,11 +11,11 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0" v-if="currentUser && !showLogOutMessage">
-          <li class="nav-item">
-            <router-link class="nav-link" to="/play">Play</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/questions">Questions</router-link>
+          <li class="nav-item" v-for="link in links" :key="link">
+            <router-link
+              :class="{ active: $route.path === link.to }"
+              class="nav-link"
+              :to="link.to">{{ link.name }}</router-link>
           </li>
         </ul>
         <div class="d-flex">
@@ -74,11 +74,27 @@
 export default {
   name: 'Navbar',
   created() {
-    console.log(this.$router.currentRoute);
+    console.log(this.$route.path);
+  },
+  computed: {
+    currentRoute() {
+      return this.$router.currentRoute.path;
+    },
   },
   data() {
     return {
       currentUser: null,
+      // links: ['Play', 'Report a bug', 'Questions'],
+      links: [
+        {
+          to: '/play',
+          name: 'Play',
+        },
+        {
+          to: '/questions',
+          name: 'Questions',
+        },
+      ],
       showLogOutMessage: false,
     };
   },
@@ -108,3 +124,7 @@ export default {
   },
 };
 </script>
+
+<style>
+
+</style>
