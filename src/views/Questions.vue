@@ -3,29 +3,31 @@
     <div class="container">
 
     <div class="row align-items-center justify-content-center mb-3">
-      <div class="col-auto">
-        <label for="questionInput">Question:</label>
+      <div class="row mb-2">
+        <div class="col-auto">
+          <label for="questionInput">Question:</label>
+        </div>
+        <div class="col-4">
+          <input class="form-control"
+            id="questionInput" type="text" v-model="tempQuestion"/>
+        </div>
+        <div class="col-auto">
+          <label for="questionInput">Answer:</label>
+        </div>
+        <div class="col-auto">
+          <input class="form-control"
+            id="answerInput" type="text" v-model="tempAnswer"/>
+        </div>
+        <div class="col-auto">
+          <label for="tagsInput">Tags:</label>
+        </div>
+        <div class="col-auto">
+          <input class="form-control"
+            id="tagsInput" type="text" v-model="tempTags" @keyup.enter="addQuestion"/>
+        </div>
       </div>
-      <div class="col-4">
-        <input class="form-control"
-          id="questionInput" type="text" v-model="tempQuestion"/>
-      </div>
       <div class="col-auto">
-        <label for="questionInput">Answer:</label>
-      </div>
-      <div class="col-auto">
-        <input class="form-control"
-          id="answerInput" type="text" v-model="tempAnswer"/>
-      </div>
-      <div class="col-auto">
-        <label for="tagsInput">Tags:</label>
-      </div>
-      <div class="col-auto">
-        <input class="form-control"
-          id="tagsInput" type="text" v-model="tempTags" @keyup.enter="addQuestion"/>
-      </div>
-      <div class="col-auto">
-        <button class="btn btn-success"
+        <button class="btn btn-success mb-2"
           @click="addQuestion">Add Question</button>
       </div>
     </div>
