@@ -8,12 +8,13 @@
         v-for="tag in seperateTags"
         :key="tag"
         :class="curCategory === tag ? 'btn-primary' : 'btn-light'"
-        @click.prevent="curCategory=tag">{{tag}}</a>
+        @click.prevent="curCategory=tag">{{tag}}<span v-if="categoryFinished(tag)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+          class="bi bi-check" viewBox="0 0 16 16">
+  <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324
+  8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg>
+</span></a>
       </div>
-      finished: {{ finished }} <br>
-      categoryFinished('c3'): {{ categoryFinished('c3') }} <br>
-      categoryFinished('cars'): {{ categoryFinished('cars') }}
-
       <h2 class="mb-4">Daily Practice</h2>
 
       <div v-if="!curCategory||finished||allDone">
@@ -21,14 +22,14 @@
           <div class="col-12 col-sm-11 col-md-6 col-lg-7 col-xl-8">
             <div class="default-card card border border-3 border-dark">
               <div class="card-body mt-4">
-                <div class="card-body mt-5 mb-5" v-if="finished">
+                <div class="card-body mt-5 mb-5" v-if="finished && !allDone">
                   <h5>You have completed your daily practice!</h5>
                 </div>
                 <div class="card-body mt-5 mb-5" v-if="allDone">
                   <h5>You have completed all the categories!</h5>
                 </div>
-                <div v-if="!curCategory" class="card-body mt-5 mb-5">
-                  <h5>Please select a category on the right.</h5>
+                <div v-if="!curCategory && !allDone" class="card-body mt-5 mb-5">
+                  <h5>Please select a category</h5>
                 </div>
               </div>
             </div>
@@ -121,12 +122,11 @@ export default {
       this.$router.back();
     }
     this.getQuestions();
-    this.getCategories();
+    // this.getCategories();
   },
   computed: {
     currentQuestion() {
-      console.log('===this.currentQuestions');
-      console.log(this.currentQuestions);
+      // console.log(this.currentQuestions);
       return this.currentQuestions[this.answeredByCategory[this.curCategory]];
     },
     currentQuestions() {
@@ -140,7 +140,8 @@ export default {
       return this.currentQuestions.length === this.answeredByCategory[this.curCategory];
     },
     allDone() {
-      return this.answered === this.questions.length;
+      return this.answered === this.questions.length
+      || this.answeredQuestions.length === this.questions.length;
     },
   },
   watch: {
@@ -160,10 +161,10 @@ export default {
         return false;
       }
 
-      console.log('category2');
-      console.log(category);
-      console.log(this.categoryQuestions(category).length);
-      console.log(this.answeredByCategory[category]);
+      // console.log('category');
+      // console.log(category);
+      // console.log(this.categoryQuestions(category).length);
+      // console.log(this.answeredByCategory[category]);
       return this.categoryQuestions(category).length === this.answeredByCategory[category];
     },
     getQuestions() {
@@ -172,11 +173,14 @@ export default {
       } else {
         this.questions = [];
       }
-
+      this.getCategories();
       const now = Date.now();
       this.questions.forEach((question, index) => {
         if (question.do_not_show_before > now) {
           this.answeredQuestions.push(index);
+          question.tags.forEach((tag) => {
+            this.answeredByCategory[tag] += 1;
+          });
         }
       });
     },
@@ -191,11 +195,6 @@ export default {
       this.seperateTags.forEach((tag) => {
         this.answeredByCategory[tag] = 0;
       });
-
-      // this.seperateTags.forEach((tag) => {
-      //   this.curCategory = tag;
-      // });
-      // this.curCategory = '';
     },
     reveal() {
       this.isRevealed = true;
@@ -238,19 +237,6 @@ export default {
     skipAnsweredQuestions() {
       while (this.answeredQuestions.includes(this.questions.indexOf(this.currentQuestion))) {
         this.answeredByCategory[this.curCategory] += 1;
-      }
-      console.log('skipping...');
-      if (this.curCategory === 'c3') {
-        console.log('this.curCategory');
-        console.log(this.curCategory);
-        console.log('this.currentQuestion');
-        console.log(this.currentQuestion);
-        console.log('this.questions.indexOf(this.currentQuestion)');
-        console.log(this.questions.indexOf(this.currentQuestion));
-        console.log('this.answeredQuestions');
-        console.log(this.answeredQuestions);
-        console.log('this.answeredByCategory[this.curCategory]');
-        console.log(this.answeredByCategory[this.curCategory]);
       }
     },
     nextQuestion() {

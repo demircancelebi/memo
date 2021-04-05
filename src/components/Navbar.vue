@@ -74,7 +74,7 @@
 export default {
   name: 'Navbar',
   created() {
-    console.log(this.$route.path);
+    // console.log(this.$route.path);
   },
   computed: {
     currentRoute() {
